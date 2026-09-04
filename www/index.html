@@ -154,7 +154,9 @@
     border:1px solid color-mix(in srgb, var(--wood-deep) 60%, transparent);
     background:var(--paper);
     color:var(--ink);
-    width:100%;
+    width:calc(100% - 60px);
+    display:block;
+    margin:0 auto;
   }
   input[type="date"]:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
   .pill-group{
