@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">今日のおみくじ</string>
+    <string name="title_activity_main">今日のおみくじ</string>
+    <string name="package_name">com.a2004.omikuji</string>
+    <string name="custom_url_scheme">com.a2004.omikuji</string>
+</resources>

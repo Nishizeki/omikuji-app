@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>今日のおみくじ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+  :root{
+    --paper:#F6EFDD;
+    --paper-deep:#E8D8AE;
+    --card:#FBF6E9;
+    --ink:#2A211B;
+    --ink-soft:#6B5C48;
+    --vermillion:#C13B3B;
+    --vermillion-deep:#8C2020;
+    --gold:#B8912F;
+    --indigo:#33415C;
+    --wood:#C7A567;
+    --wood-deep:#9C7A40;
+    --wood-dark:#7A5E30;
+    --hole:#3A2C18;
+    --focus:#33415C;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#1B1712;
+      --paper-deep:#120E0B;
+      --card:#211B14;
+      --ink:#EFE3D2;
+      --ink-soft:#B9A98D;
+      --vermillion:#D96A55;
+      --vermillion-deep:#A5341F;
+      --gold:#D4AF5A;
+      --indigo:#8B9DBE;
+      --wood:#6E5636;
+      --wood-deep:#4A3A22;
+      --wood-dark:#2E2414;
+      --hole:#0B0806;
+      --focus:#D4AF5A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#1B1712;
+    --paper-deep:#120E0B;
+    --card:#211B14;
+    --ink:#EFE3D2;
+    --ink-soft:#B9A98D;
+    --vermillion:#D96A55;
+    --vermillion-deep:#A5341F;
+    --gold:#D4AF5A;
+    --indigo:#8B9DBE;
+    --wood:#6E5636;
+    --wood-deep:#4A3A22;
+    --wood-dark:#2E2414;
+    --hole:#0B0806;
+    --focus:#D4AF5A;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+    background:
+      radial-gradient(ellipse at 50% -10%, color-mix(in srgb, var(--paper-deep) 55%, transparent), transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New','Hiragino Sans','Yu Gothic',sans-serif;
+  }
+
+  .stage{
+    width:100%;
+    max-width:420px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+    animation:stageIn .6s ease both;
+  }
+  @keyframes stageIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  header{
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+  }
+  .torii{ font-size:1.5rem; line-height:1; opacity:.85; }
+  h1{
+    font-family:'Shippori Mincho', 'Hiragino Mincho ProN', serif;
+    font-weight:800;
+    font-size:1.7rem;
+    margin:2px 0 0;
+    letter-spacing:.04em;
+    text-wrap:balance;
+  }
+  .date{
+    font-size:.8rem;
+    color:var(--ink-soft);
+    letter-spacing:.08em;
+  }
+  .profile{
+    font-size:.72rem;
+    color:var(--gold);
+    letter-spacing:.1em;
+  }
+  .edit-link{
+    background:none;
+    border:none;
+    color:var(--ink-soft);
+    text-decoration:underline;
+    text-underline-offset:2px;
+    font:inherit;
+    font-size:.7rem;
+    cursor:pointer;
+    padding:2px 0;
+  }
+
+  /* ---- Profile scene ---- */
+  #profile-scene[hidden]{ display:none; }
+  .form-card{
+    width:100%;
+    background:var(--card);
+    border-radius:10px;
+    padding:24px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    box-shadow:0 12px 26px color-mix(in srgb, var(--ink) 16%, transparent);
+    border:1px solid color-mix(in srgb, var(--wood-deep) 35%, transparent);
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .field-label{
+    font-size:.72rem;
+    letter-spacing:.1em;
+    color:var(--ink-soft);
+    text-align:left;
+  }
+  input[type="date"]{
+    font:inherit;
+    font-size:.95rem;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid color-mix(in srgb, var(--wood-deep) 60%, transparent);
+    background:var(--paper);
+    color:var(--ink);
+    width:100%;
+  }
+  input[type="date"]:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+  .pill-group{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .pill{
+    flex:1 1 auto;
+    border:1px solid color-mix(in srgb, var(--wood-deep) 60%, transparent);
+    background:transparent;
+    color:var(--ink);
+    padding:9px 10px;
+    border-radius:999px;
+    font:inherit;
+    font-size:.85rem;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .pill:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+  .pill[aria-pressed="true"]{
+    background:var(--vermillion);
+    border-color:var(--vermillion);
+    color:#fff;
+  }
+  .primary-btn{
+    background:var(--vermillion);
+    color:#fff;
+    border:none;
+    padding:13px 20px;
+    border-radius:8px;
+    font:inherit;
+    font-weight:700;
+    font-size:.95rem;
+    letter-spacing:.05em;
+    cursor:pointer;
+    transition:background .15s ease, opacity .15s ease;
+  }
+  .primary-btn:hover:not(:disabled){ background:var(--vermillion-deep); }
+  .primary-btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .primary-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+
+  /* ---- Box scene ---- */
+  #box-scene{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
+  #box-scene[hidden]{ display:none; }
+  .prompt{
+    font-size:.95rem;
+    color:var(--ink-soft);
+    text-align:center;
+  }
+  .box-wrap{
+    position:relative;
+    width:170px;
+    height:220px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  .box-shadow{
+    position:absolute;
+    bottom:-6px;
+    width:130px;
+    height:22px;
+    border-radius:50%;
+    background:radial-gradient(ellipse, color-mix(in srgb, var(--ink) 35%, transparent), transparent 70%);
+    filter:blur(1px);
+  }
+  .fortune-box{
+    position:relative;
+    width:140px;
+    height:190px;
+    border-radius:22px 22px 26px 26px;
+    background:
+      repeating-linear-gradient(90deg,
+        color-mix(in srgb, var(--wood) 100%, transparent) 0px,
+        color-mix(in srgb, var(--wood) 92%, black 4%) 6px,
+        var(--wood) 12px),
+      linear-gradient(180deg, var(--wood) 0%, var(--wood-deep) 100%);
+    box-shadow:
+      inset 0 3px 6px color-mix(in srgb, white 25%, transparent),
+      inset 0 -10px 18px color-mix(in srgb, black 30%, transparent),
+      0 10px 20px color-mix(in srgb, var(--ink) 25%, transparent);
+    cursor:pointer;
+    border:none;
+    padding:0;
+    font:inherit;
+    color:inherit;
+    outline-offset:4px;
+  }
+  .fortune-box:focus-visible{ outline:3px solid var(--focus); }
+  .band{
+    position:absolute;
+    left:0; right:0;
+    height:10px;
+    background:linear-gradient(180deg, transparent, color-mix(in srgb, var(--wood-dark) 70%, transparent), transparent);
+  }
+  .band.b1{ top:36px; }
+  .band.b2{ top:132px; }
+  .hole{
+    position:absolute;
+    top:14px;
+    left:50%;
+    transform:translateX(-50%);
+    width:34px;
+    height:14px;
+    border-radius:50%;
+    background:radial-gradient(ellipse at 50% 40%, var(--hole), black 90%);
+    box-shadow:inset 0 2px 4px rgba(0,0,0,.6);
+  }
+  .stick{
+    position:absolute;
+    top:14px;
+    left:50%;
+    width:14px;
+    height:120px;
+    margin-left:-7px;
+    border-radius:3px 3px 2px 2px;
+    background:linear-gradient(180deg, #EFE3C8, #D8C79C);
+    box-shadow:0 2px 4px rgba(0,0,0,.3);
+    transform:translateY(0);
+    opacity:0;
+    pointer-events:none;
+  }
+  .stick .tip{
+    position:absolute;
+    top:-22px; left:50%;
+    transform:translateX(-50%);
+    background:var(--vermillion);
+    color:#fff;
+    font-family:'Shippori Mincho', serif;
+    font-size:.7rem;
+    padding:3px 6px;
+    border-radius:4px;
+    white-space:nowrap;
+    box-shadow:0 2px 4px rgba(0,0,0,.25);
+  }
+
+  .fortune-box.shaking{ animation:shake .55s ease; }
+  @keyframes shake{
+    0%,100%{ transform:rotate(0deg); }
+    15%{ transform:rotate(-6deg); }
+    30%{ transform:rotate(5deg); }
+    45%{ transform:rotate(-5deg); }
+    60%{ transform:rotate(4deg); }
+    75%{ transform:rotate(-3deg); }
+    90%{ transform:rotate(2deg); }
+  }
+  .stick.rise{
+    animation:rise .7s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+  @keyframes rise{
+    0%{ opacity:0; transform:translateY(0) rotate(0deg); }
+    20%{ opacity:1; }
+    100%{ opacity:1; transform:translateY(-96px) rotate(-4deg); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .fortune-box.shaking{ animation:none; }
+    .stick.rise{ animation:none; opacity:1; transform:translateY(-96px) rotate(0deg); }
+  }
+
+  /* ---- Result scene ---- */
+  #result-scene{ width:100%; }
+  #result-scene[hidden]{ display:none; }
+  .fade-in{ animation:fadeIn .5s ease both; }
+  @keyframes fadeIn{ from{ opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .slip{
+    position:relative;
+    width:100%;
+    background:var(--card);
+    border:1px solid color-mix(in srgb, var(--wood-deep) 40%, transparent);
+    border-radius:6px;
+    padding:26px 22px 22px;
+    box-shadow:0 14px 30px color-mix(in srgb, var(--ink) 18%, transparent);
+    overflow:hidden;
+  }
+  .slip::before{
+    content:"";
+    position:absolute;
+    inset:8px;
+    border:1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+    border-radius:3px;
+    pointer-events:none;
+  }
+  .slip-number{
+    font-size:.72rem;
+    letter-spacing:.12em;
+    color:var(--ink-soft);
+    text-align:center;
+  }
+  .seal{
+    margin:6px auto 4px;
+    width:98px;
+    height:98px;
+    border-radius:50%;
+    border:3px double var(--vermillion);
+    color:var(--vermillion);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transform:rotate(-6deg);
+    animation:stamp .45s cubic-bezier(.3,1.6,.4,1) both;
+    animation-delay:.15s;
+  }
+  @keyframes stamp{
+    0%{ opacity:0; transform:rotate(-6deg) scale(1.6); }
+    100%{ opacity:1; transform:rotate(-6deg) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .seal{ animation:none; }
+  }
+  .seal span{
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:1.6rem;
+    letter-spacing:.05em;
+  }
+  .overall-text{
+    text-align:center;
+    font-size:.92rem;
+    color:var(--ink-soft);
+    margin:2px 0 18px;
+    padding:0 6px;
+  }
+
+  .rows{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    border-top:1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  }
+  .row{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:10px;
+    padding:10px 2px;
+    border-bottom:1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    align-items:baseline;
+  }
+  .row .label{
+    font-family:'Shippori Mincho', serif;
+    font-weight:600;
+    font-size:.82rem;
+    color:var(--indigo);
+    letter-spacing:.06em;
+  }
+  .row .value{ font-size:.88rem; }
+  .swatch{
+    display:inline-block;
+    width:.7em; height:.7em;
+    border-radius:50%;
+    margin-right:.4em;
+    vertical-align:middle;
+    box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ink) 25%, transparent);
+  }
+
+  .advice{
+    margin-top:16px;
+    text-align:center;
+    font-family:'Shippori Mincho', serif;
+    font-size:1rem;
+    color:var(--ink);
+  }
+  .advice::before{ content:"「"; color:var(--gold); }
+  .advice::after{ content:"」"; color:var(--gold); }
+
+  footer{
+    text-align:center;
+    font-size:.7rem;
+    color:var(--ink-soft);
+    opacity:.75;
+  }
+  .already-note{
+    text-align:center;
+    font-size:.78rem;
+    color:var(--ink-soft);
+    margin-top:10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <header>
+    <div class="torii" aria-hidden="true">⛩</div>
+    <h1>今日のおみくじ</h1>
+    <div class="date" id="date-label"></div>
+    <div class="profile" id="profile-label"></div>
+    <button type="button" class="edit-link" id="change-profile-btn" hidden>プロフィールを変更</button>
+  </header>
+
+  <div id="profile-scene" hidden>
+    <div class="form-card">
+      <div class="field">
+        <label class="field-label" for="birth-input">生年月日</label>
+        <input type="date" id="birth-input" max="">
+      </div>
+      <div class="field">
+        <span class="field-label">性別</span>
+        <div class="pill-group" id="gender-group" role="radiogroup" aria-label="性別">
+          <button type="button" class="pill" data-value="male" aria-pressed="false">男性</button>
+          <button type="button" class="pill" data-value="female" aria-pressed="false">女性</button>
+          <button type="button" class="pill" data-value="other" aria-pressed="false">その他</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="field-label">血液型</span>
+        <div class="pill-group" id="blood-group" role="radiogroup" aria-label="血液型">
+          <button type="button" class="pill" data-value="A" aria-pressed="false">A型</button>
+          <button type="button" class="pill" data-value="B" aria-pressed="false">B型</button>
+          <button type="button" class="pill" data-value="O" aria-pressed="false">O型</button>
+          <button type="button" class="pill" data-value="AB" aria-pressed="false">AB型</button>
+        </div>
+      </div>
+      <button type="button" class="primary-btn" id="profile-submit" disabled>おみくじを引く</button>
+    </div>
+  </div>
+
+  <div id="box-scene" hidden>
+    <p class="prompt">タップして今日の運勢を引きましょう</p>
+    <div class="box-wrap">
+      <div class="box-shadow" aria-hidden="true"></div>
+      <button class="fortune-box" id="draw-btn" aria-label="おみくじを引く">
+        <div class="band b1" aria-hidden="true"></div>
+        <div class="band b2" aria-hidden="true"></div>
+        <div class="hole" aria-hidden="true"></div>
+        <div class="stick" id="stick" aria-hidden="true"><span class="tip" id="stick-num"></span></div>
+      </button>
+    </div>
+  </div>
+
+  <div id="result-scene" hidden></div>
+
+  <footer>これは娯楽目的の占いです</footer>
+</div>
+
+<script>
+(function(){
+  var dateEl = document.getElementById('date-label');
+  var now = new Date();
+  var y = now.getFullYear(), m = now.getMonth()+1, d = now.getDate();
+  var weekdays = ['日','月','火','水','木','金','土'];
+  dateEl.textContent = y + '年' + m + '月' + d + '日（' + weekdays[now.getDay()] + '）';
+  var dateKey = y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+
+  var PROFILE_KEY = 'omikuji-profile-v1';
+  var GENDER_LABEL = { male:'男性', female:'女性', other:'その他' };
+
+  var ZODIAC_CUTOFFS = [
+    [1,20,'山羊座'],[2,19,'水瓶座'],[3,20,'魚座'],[4,20,'牡羊座'],
+    [5,21,'牡牛座'],[6,21,'双子座'],[7,22,'蟹座'],[8,23,'獅子座'],
+    [9,23,'乙女座'],[10,23,'天秤座'],[11,22,'蠍座'],[12,21,'射手座']
+  ];
+  function zodiacSign(month, day){
+    for (var i=0;i<ZODIAC_CUTOFFS.length;i++){
+      if (month === ZODIAC_CUTOFFS[i][0] && day <= ZODIAC_CUTOFFS[i][1]) return ZODIAC_CUTOFFS[i][2];
+    }
+    return '山羊座';
+  }
+  var ERA_ANIMALS = ['申','酉','戌','亥','子','丑','寅','卯','辰','巳','午','未'];
+  function eraAnimal(year){ return ERA_ANIMALS[(year - 2004 + 1200) % 12]; }
+
+  function hashString(str){
+    var h = 1779033703 ^ str.length;
+    for (var i=0; i<str.length; i++){
+      h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+      h = (h << 13) | (h >>> 19);
+    }
+    return function(){
+      h = Math.imul(h ^ (h >>> 16), 2246822507);
+      h = Math.imul(h ^ (h >>> 13), 3266489909);
+      h ^= h >>> 16;
+      return h >>> 0;
+    };
+  }
+  function mulberry32(seed){
+    var a = seed;
+    return function(){
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  var RANKS = [
+    { name:'大吉', weight:12, text:'何をしても上手くいく、最高の一日。迷わず動きましょう。' },
+    { name:'中吉', weight:18, text:'運気は上向き。焦らず一歩ずつ進めば実を結びます。' },
+    { name:'小吉', weight:20, text:'小さな幸運がそっと訪れる日。見逃さないように。' },
+    { name:'吉',   weight:24, text:'穏やかで安定した運気。いつも通りが一番。' },
+    { name:'末吉', weight:18, text:'今はまだ種まきの時期。焦らず力を蓄えて。' },
+    { name:'凶',   weight:8,  text:'慎重な行動を。無理をせず今日はゆっくり過ごして。' }
+  ];
+  var LOVE = ['素直な気持ちが吉と出る日。','相手の話にじっくり耳を傾けて。','新しい出会いの気配あり。','今は距離感を大切に。','感謝の言葉が縁を深める。'];
+  var WORK = ['集中力が高まる時間帯あり、午前中が勝負。','周囲との連携が成果を生む。','焦らず一つずつ片付けるのが吉。','新しい提案が思わぬ評価を得る。','確認作業を怠らないこと。'];
+  var MONEY = ['衝動買いは控えめに。','自己投資への出費は吉。','臨時収入の兆しあり。','貯蓄を見直す良い機会。','人におごると運気アップ。'];
+  var HEALTH = ['軽い運動が運気を後押し。','睡眠の質を見直して。','水分補給を忘れずに。','深呼吸でリフレッシュ。','無理せず休息も大切に。'];
+  var COLORS = [
+    ['朱色','#C13B3B'], ['藍色','#33415C'], ['山吹色','#E0A526'], ['若草色','#7CA24A'],
+    ['桜色','#E8B4BE'], ['金色','#B8912F'], ['白','#F2EDE3'], ['墨色','#2A211B'],
+    ['空色','#6FA8C8'], ['紫','#6B4C7A'], ['橙色','#D97B3F'], ['深緑','#2F5D4F']
+  ];
+  var ITEMS = ['お守り','御朱印帳','五円玉','折り鶴','扇子','手ぬぐい','おみくじの結び紐','御札','数珠','招き猫の置物'];
+  var ADVICE = ['迷ったら直感を信じて。','感謝の一言を忘れずに。','今日は誰かに頼ってみる日。','焦らずマイペースが吉。','小さな挑戦が運を開く。','整理整頓が運気を高める。','笑顔が一番の開運アイテム。','早起きは三文の徳あり。','人との縁を大切に。','今日という日を楽しんで。'];
+  var BLOOD = {
+    A:  ['几帳面な行動が今日は吉と出そう。','丁寧な仕事ぶりが評価される日。','慎重さが幸運を呼びます。'],
+    B:  ['マイペースさが人を惹きつける日。','自由な発想がひらめきを生む。','思い立ったら即行動が吉。'],
+    O:  ['おおらかな気持ちが運気を上げる。','面倒見の良さが感謝される日。','大胆な一歩が道を開く。'],
+    AB: ['冷静な判断が功を奏す日。','二面性がむしろ強みになる。','独自の視点が周りを驚かせる。']
+  };
+
+  function loadProfile(){
+    try {
+      var raw = localStorage.getItem(PROFILE_KEY);
+      if (!raw) return null;
+      var p = JSON.parse(raw);
+      if (p && p.year && p.month && p.day && p.gender && p.blood) return p;
+      return null;
+    } catch (e) { return null; }
+  }
+  function saveProfile(p){
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch (e) {}
+  }
+
+  var profileScene = document.getElementById('profile-scene');
+  var boxScene = document.getElementById('box-scene');
+  var resultScene = document.getElementById('result-scene');
+  var profileLabel = document.getElementById('profile-label');
+  var changeBtn = document.getElementById('change-profile-btn');
+  var birthInput = document.getElementById('birth-input');
+  var genderGroup = document.getElementById('gender-group');
+  var bloodGroup = document.getElementById('blood-group');
+  var submitBtn = document.getElementById('profile-submit');
+
+  birthInput.max = dateKey;
+  var selectedGender = null;
+  var selectedBlood = null;
+
+  function wirePillGroup(group, onSelect){
+    var buttons = Array.prototype.slice.call(group.querySelectorAll('.pill'));
+    buttons.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        buttons.forEach(function(b){ b.setAttribute('aria-pressed', 'false'); });
+        btn.setAttribute('aria-pressed', 'true');
+        onSelect(btn.getAttribute('data-value'));
+      });
+    });
+    return buttons;
+  }
+  var genderButtons = wirePillGroup(genderGroup, function(v){ selectedGender = v; updateSubmitState(); });
+  var bloodButtons = wirePillGroup(bloodGroup, function(v){ selectedBlood = v; updateSubmitState(); });
+  birthInput.addEventListener('input', updateSubmitState);
+  function updateSubmitState(){
+    submitBtn.disabled = !(birthInput.value && selectedGender && selectedBlood);
+  }
+
+  function showProfileForm(existing){
+    profileScene.hidden = false;
+    boxScene.hidden = true;
+    resultScene.hidden = true;
+    if (existing){
+      birthInput.value = existing.year + '-' + String(existing.month).padStart(2,'0') + '-' + String(existing.day).padStart(2,'0');
+      selectedGender = existing.gender;
+      selectedBlood = existing.blood;
+      genderButtons.forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-value') === existing.gender ? 'true' : 'false'); });
+      bloodButtons.forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-value') === existing.blood ? 'true' : 'false'); });
+    }
+    updateSubmitState();
+  }
+
+  submitBtn.addEventListener('click', function(){
+    if (!birthInput.value || !selectedGender || !selectedBlood) return;
+    var parts = birthInput.value.split('-');
+    var profile = { year:parseInt(parts[0],10), month:parseInt(parts[1],10), day:parseInt(parts[2],10), gender:selectedGender, blood:selectedBlood };
+    saveProfile(profile);
+    profileScene.hidden = true;
+    initApp(profile);
+  });
+
+  changeBtn.addEventListener('click', function(){
+    showProfileForm(loadProfile());
+  });
+
+  function initApp(profile){
+    changeBtn.hidden = false;
+    var birthSign = zodiacSign(profile.month, profile.day);
+    var birthEra = eraAnimal(profile.year);
+    profileLabel.textContent = birthSign + ' ・ ' + birthEra + '年生まれ ・ ' + GENDER_LABEL[profile.gender] + ' ・ ' + profile.blood + '型';
+
+    var storageKey = 'omikuji-' + dateKey + '-' + profile.year + profile.month + profile.day + profile.gender + profile.blood;
+    var seedFn = hashString(dateKey + '-' + profile.year + profile.month + profile.day + profile.gender + profile.blood);
+    var rand = mulberry32(seedFn());
+    function pick(arr){ return arr[Math.floor(rand() * arr.length)]; }
+    function pickRank(){
+      var total = RANKS.reduce(function(s,r){ return s+r.weight; }, 0);
+      var x = rand() * total;
+      for (var i=0;i<RANKS.length;i++){
+        x -= RANKS[i].weight;
+        if (x <= 0) return RANKS[i];
+      }
+      return RANKS[RANKS.length-1];
+    }
+
+    function draw(){
+      var stickNumber = Math.floor(rand() * 100) + 1;
+      var rank = pickRank();
+      var color = pick(COLORS);
+      return {
+        stickNumber: stickNumber,
+        rank: rank.name,
+        overall: rank.text,
+        love: pick(LOVE),
+        work: pick(WORK),
+        money: pick(MONEY),
+        health: pick(HEALTH),
+        bloodTrait: pick(BLOOD[profile.blood]),
+        colorName: color[0],
+        colorHex: color[1],
+        item: pick(ITEMS),
+        advice: pick(ADVICE)
+      };
+    }
+
+    function row(label, value){
+      return '<div class="row"><div class="label">' + label + '</div><div class="value">' + value + '</div></div>';
+    }
+
+    function renderResult(result, alreadyDrawn){
+      resultScene.innerHTML =
+        '<div class="slip fade-in">' +
+          '<div class="slip-number">第 ' + result.stickNumber + ' 番</div>' +
+          '<div class="seal"><span>' + result.rank + '</span></div>' +
+          '<p class="overall-text">' + result.overall + '</p>' +
+          '<div class="rows">' +
+            row('恋愛', result.love) +
+            row('仕事', result.work) +
+            row('金運', result.money) +
+            row('健康', result.health) +
+            row('血液型', result.bloodTrait) +
+            row('色', '<span class="swatch" style="background:' + result.colorHex + '"></span>' + result.colorName) +
+            row('小物', result.item) +
+          '</div>' +
+          '<p class="advice">' + result.advice + '</p>' +
+        '</div>' +
+        (alreadyDrawn ? '<p class="already-note">本日はすでに引いています</p>' : '');
+      resultScene.hidden = false;
+      boxScene.hidden = true;
+    }
+
+    var saved = null;
+    try { var raw = localStorage.getItem(storageKey); if (raw) saved = JSON.parse(raw); } catch (e) {}
+
+    boxScene.hidden = false;
+    resultScene.hidden = true;
+
+    if (saved){
+      renderResult(saved, true);
+    } else {
+      var oldBtn = document.getElementById('draw-btn');
+      var btn = oldBtn.cloneNode(true);
+      oldBtn.parentNode.replaceChild(btn, oldBtn);
+      btn.classList.remove('shaking');
+      var stick = btn.querySelector('.stick');
+      var stickNum = btn.querySelector('.tip');
+      stick.style.opacity = '';
+      stick.classList.remove('rise');
+      var drawing = false;
+      btn.addEventListener('click', function(){
+        if (drawing) return;
+        drawing = true;
+        var result = draw();
+        try { localStorage.setItem(storageKey, JSON.stringify(result)); } catch (e) {}
+        stickNum.textContent = '第' + result.stickNumber + '番';
+        btn.classList.add('shaking');
+        setTimeout(function(){
+          stick.style.opacity = '1';
+          stick.classList.add('rise');
+        }, 300);
+        setTimeout(function(){
+          renderResult(result, false);
+        }, 1250);
+      });
+    }
+  }
+
+  var profile = loadProfile();
+  if (profile){
+    initApp(profile);
+  } else {
+    showProfileForm(null);
+  }
+})();
+</script>
+</body>
+</html>
