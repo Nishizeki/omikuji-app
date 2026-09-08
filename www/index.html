@@ -58,6 +58,7 @@
   }
 
   *{box-sizing:border-box;}
+  [hidden]{ display:none !important; }
   html,body{ height:100%; }
   body{
     margin:0;
@@ -71,6 +72,7 @@
       var(--paper);
     color:var(--ink);
     font-family:'Zen Kaku Gothic New','Hiragino Sans','Yu Gothic',sans-serif;
+    transition:background-color .3s ease, color .3s ease;
   }
 
   .stage{
@@ -122,8 +124,37 @@
     padding:2px 0;
   }
 
+  /* ---- Tab bar ---- */
+  .tab-bar{
+    display:flex;
+    gap:6px;
+    width:100%;
+  }
+  .tab-btn{
+    flex:1 1 0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    background:transparent;
+    border:1px solid color-mix(in srgb, var(--wood-deep) 40%, transparent);
+    border-radius:10px;
+    padding:8px 4px;
+    font:inherit;
+    font-size:.65rem;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .tab-btn .tab-icon{ font-size:1.05rem; }
+  .tab-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+  .tab-btn[aria-pressed="true"]{
+    background:var(--vermillion);
+    color:#fff;
+    border-color:var(--vermillion);
+  }
+
   /* ---- Profile scene ---- */
-  #profile-scene[hidden]{ display:none; }
   .form-card{
     width:100%;
     background:var(--card);
@@ -199,6 +230,23 @@
   .primary-btn:disabled{ opacity:.45; cursor:not-allowed; }
   .primary-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
 
+  .secondary-btn{
+    margin-top:14px;
+    width:100%;
+    background:transparent;
+    border:1px solid var(--vermillion);
+    color:var(--vermillion);
+    padding:11px 18px;
+    border-radius:8px;
+    font:inherit;
+    font-weight:700;
+    font-size:.88rem;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .secondary-btn:hover{ background:color-mix(in srgb, var(--vermillion) 12%, transparent); }
+  .secondary-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+
   /* ---- Box scene ---- */
   #box-scene{
     display:flex;
@@ -206,7 +254,6 @@
     align-items:center;
     gap:18px;
   }
-  #box-scene[hidden]{ display:none; }
   .prompt{
     font-size:.95rem;
     color:var(--ink-soft);
@@ -322,9 +369,8 @@
     .stick.rise{ animation:none; opacity:1; transform:translateY(-96px) rotate(0deg); }
   }
 
-  /* ---- Result scene ---- */
-  #result-scene{ width:100%; }
-  #result-scene[hidden]{ display:none; }
+  /* ---- Result & other full-width scenes ---- */
+  .scene-panel{ width:100%; }
   .fade-in{ animation:fadeIn .5s ease both; }
   @keyframes fadeIn{ from{ opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
 
@@ -428,6 +474,148 @@
   .advice::before{ content:"「"; color:var(--gold); }
   .advice::after{ content:"」"; color:var(--gold); }
 
+  /* ---- History scene ---- */
+  .stat-row{
+    display:flex;
+    justify-content:space-around;
+    margin-bottom:4px;
+  }
+  .stat{ text-align:center; }
+  .stat-num{
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:1.5rem;
+    color:var(--vermillion);
+    line-height:1;
+  }
+  .stat-label{
+    font-size:.66rem;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .history-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    max-height:52vh;
+    overflow-y:auto;
+  }
+  .history-item{
+    display:grid;
+    grid-template-columns:auto auto 1fr;
+    gap:10px;
+    align-items:center;
+    padding:10px 12px;
+    border-radius:8px;
+    background:color-mix(in srgb, var(--paper-deep) 45%, transparent);
+  }
+  .history-date{ font-size:.7rem; color:var(--ink-soft); white-space:nowrap; }
+  .history-rank{
+    font-family:'Shippori Mincho', serif;
+    font-weight:700;
+    font-size:.85rem;
+    color:var(--vermillion);
+    white-space:nowrap;
+  }
+  .history-text{
+    font-size:.76rem;
+    color:var(--ink);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .empty-note{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:.85rem;
+    padding:22px 6px;
+  }
+
+  /* ---- Collection scene ---- */
+  .collection-summary{
+    text-align:center;
+    font-size:.85rem;
+    color:var(--ink-soft);
+    margin:0 0 4px;
+  }
+  .charm-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:10px;
+    max-height:56vh;
+    overflow-y:auto;
+    padding-right:2px;
+  }
+  .charm-cell{
+    aspect-ratio:1;
+    border-radius:12px;
+    background:color-mix(in srgb, var(--paper-deep) 40%, transparent);
+    border:1px solid color-mix(in srgb, var(--wood-deep) 35%, transparent);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    padding:6px;
+    text-align:center;
+  }
+  .charm-cell.locked{ opacity:.4; filter:grayscale(1); }
+  .charm-icon{ font-size:1.7rem; }
+  .charm-name{ font-size:.6rem; color:var(--ink-soft); line-height:1.25; }
+
+  /* ---- Theme scene ---- */
+  .theme-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:12px;
+  }
+  .theme-card{
+    border-radius:14px;
+    padding:16px 10px;
+    text-align:center;
+    cursor:pointer;
+    border:2px solid transparent;
+    font:inherit;
+  }
+  .theme-card.selected{ border-color:var(--gold); }
+  .theme-card:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+  .theme-name{
+    font-family:'Shippori Mincho', serif;
+    font-weight:700;
+    font-size:.85rem;
+  }
+  .theme-tagline{
+    font-size:.62rem;
+    margin-top:4px;
+  }
+  .settings-block{
+    border-top:1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    padding-top:16px;
+    margin-top:16px;
+  }
+  .settings-label{
+    font-size:.72rem;
+    color:var(--ink-soft);
+    margin:0 0 8px;
+  }
+  .toggle-btn{
+    width:100%;
+    background:transparent;
+    border:1px solid color-mix(in srgb, var(--wood-deep) 60%, transparent);
+    color:var(--ink);
+    padding:11px 14px;
+    border-radius:8px;
+    font:inherit;
+    font-size:.82rem;
+    cursor:pointer;
+  }
+  .toggle-btn[aria-pressed="true"]{
+    background:var(--vermillion);
+    border-color:var(--vermillion);
+    color:#fff;
+  }
+  .toggle-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+
   footer{
     text-align:center;
     font-size:.7rem;
@@ -452,6 +640,13 @@
     <div class="profile" id="profile-label"></div>
     <button type="button" class="edit-link" id="change-profile-btn" hidden>プロフィールを変更</button>
   </header>
+
+  <nav class="tab-bar" id="tab-bar" aria-label="メニュー" hidden>
+    <button type="button" class="tab-btn" data-tab="main" aria-pressed="true"><span class="tab-icon" aria-hidden="true">⛩</span>おみくじ</button>
+    <button type="button" class="tab-btn" data-tab="history" aria-pressed="false"><span class="tab-icon" aria-hidden="true">📖</span>おみくじ帳</button>
+    <button type="button" class="tab-btn" data-tab="collection" aria-pressed="false"><span class="tab-icon" aria-hidden="true">🎁</span>授与品</button>
+    <button type="button" class="tab-btn" data-tab="theme" aria-pressed="false"><span class="tab-icon" aria-hidden="true">🎨</span>テーマ</button>
+  </nav>
 
   <div id="profile-scene" hidden>
     <div class="form-card">
@@ -493,7 +688,10 @@
     </div>
   </div>
 
-  <div id="result-scene" hidden></div>
+  <div id="result-scene" class="scene-panel" hidden></div>
+  <div id="history-scene" class="scene-panel" hidden></div>
+  <div id="collection-scene" class="scene-panel" hidden></div>
+  <div id="theme-scene" class="scene-panel" hidden></div>
 
   <footer>これは娯楽目的の占いです</footer>
 </div>
@@ -508,7 +706,54 @@
   var dateKey = y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
 
   var PROFILE_KEY = 'omikuji-profile-v1';
+  var THEME_KEY = 'omikuji-theme-v1';
+  var NOTIFY_KEY = 'omikuji-notify-v1';
+  var HISTORY_KEY = 'omikuji-history-v2';
   var GENDER_LABEL = { male:'男性', female:'女性', other:'その他' };
+
+  function getPlugin(name){
+    return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins[name]) || null;
+  }
+
+  /* ---------------- Themes (original, fictional shrine motifs) ---------------- */
+  var THEMES = {
+    shirogitsune: {
+      name:'白狐の社', tagline:'定番の朱色と金色',
+      light:{ paper:'#F6EFDD', paperDeep:'#E8D8AE', card:'#FBF6E9', ink:'#2A211B', inkSoft:'#6B5C48', vermillion:'#C13B3B', vermillionDeep:'#8C2020', gold:'#B8912F', indigo:'#33415C', wood:'#C7A567', woodDeep:'#9C7A40', woodDark:'#7A5E30', hole:'#3A2C18', focus:'#33415C' },
+      dark:{ paper:'#1B1712', paperDeep:'#120E0B', card:'#211B14', ink:'#EFE3D2', inkSoft:'#B9A98D', vermillion:'#D96A55', vermillionDeep:'#A5341F', gold:'#D4AF5A', indigo:'#8B9DBE', wood:'#6E5636', woodDeep:'#4A3A22', woodDark:'#2E2414', hole:'#0B0806', focus:'#D4AF5A' }
+    },
+    yamagiri: {
+      name:'山霧の社', tagline:'深緑と霧のしじま',
+      light:{ paper:'#EEF3EA', paperDeep:'#D9E4D2', card:'#F7FAF4', ink:'#20281F', inkSoft:'#5B6B54', vermillion:'#3E7A52', vermillionDeep:'#2A5A3A', gold:'#8FA24A', indigo:'#35594F', wood:'#9CB08A', woodDeep:'#71875F', woodDark:'#586B47', hole:'#22301E', focus:'#35594F' },
+      dark:{ paper:'#131A12', paperDeep:'#0C110B', card:'#182018', ink:'#E4EEDF', inkSoft:'#A9BBA0', vermillion:'#6FBE86', vermillionDeep:'#3F8256', gold:'#B9CE7C', indigo:'#8FB3A4', wood:'#4C5E42', woodDeep:'#39472F', woodDark:'#242D1D', hole:'#080B07', focus:'#B9CE7C' }
+    },
+    yukidoke: {
+      name:'雪解けの宮', tagline:'冬空の藍と白銀',
+      light:{ paper:'#EEF3F8', paperDeep:'#D6E3EE', card:'#F8FBFD', ink:'#20272E', inkSoft:'#59677A', vermillion:'#3C6FA6', vermillionDeep:'#254C78', gold:'#9FB9C9', indigo:'#2E3E5C', wood:'#AFC4D6', woodDeep:'#7E9AB0', woodDark:'#5F7A8E', hole:'#1E2A33', focus:'#2E3E5C' },
+      dark:{ paper:'#10151C', paperDeep:'#0A0E13', card:'#151C24', ink:'#E1EAF2', inkSoft:'#9DB0C2', vermillion:'#6FA3D6', vermillionDeep:'#3E6D9C', gold:'#BFD3DF', indigo:'#8FA8C9', wood:'#3D5163', woodDeep:'#2C3B49', woodDark:'#1C2731', hole:'#070A0D', focus:'#BFD3DF' }
+    },
+    koyo: {
+      name:'紅葉の杜', tagline:'紅葉と夕暮れの紫',
+      light:{ paper:'#F8EFE7', paperDeep:'#EEDAC6', card:'#FDF5EC', ink:'#2E1F1A', inkSoft:'#7A5C4A', vermillion:'#C1602E', vermillionDeep:'#8F3F17', gold:'#B8752F', indigo:'#5C3A5E', wood:'#C79A67', woodDeep:'#9C6E40', woodDark:'#7A5230', hole:'#3A2418', focus:'#5C3A5E' },
+      dark:{ paper:'#1C130F', paperDeep:'#130D0A', card:'#211712', ink:'#F1E1D2', inkSoft:'#C2A48D', vermillion:'#E08A5A', vermillionDeep:'#B0562A', gold:'#D9A45C', indigo:'#B98FBB', wood:'#6E4A36', woodDeep:'#4A3122', woodDark:'#2E1E14', hole:'#0B0705', focus:'#D9A45C' }
+    }
+  };
+  var THEME_VAR_MAP = { paper:'--paper', paperDeep:'--paper-deep', card:'--card', ink:'--ink', inkSoft:'--ink-soft', vermillion:'--vermillion', vermillionDeep:'--vermillion-deep', gold:'--gold', indigo:'--indigo', wood:'--wood', woodDeep:'--wood-deep', woodDark:'--wood-dark', hole:'--hole', focus:'--focus' };
+
+  function isDarkMode(){ return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches); }
+  function loadTheme(){ try { var t = localStorage.getItem(THEME_KEY); return (t && THEMES[t]) ? t : 'shirogitsune'; } catch(e){ return 'shirogitsune'; } }
+  function saveTheme(id){ try { localStorage.setItem(THEME_KEY, id); } catch(e){} }
+  function applyTheme(themeId){
+    var theme = THEMES[themeId] || THEMES.shirogitsune;
+    var vars = isDarkMode() ? theme.dark : theme.light;
+    var root = document.documentElement;
+    Object.keys(THEME_VAR_MAP).forEach(function(k){ root.style.setProperty(THEME_VAR_MAP[k], vars[k]); });
+  }
+  var currentTheme = loadTheme();
+  applyTheme(currentTheme);
+  if (window.matchMedia){
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){ applyTheme(currentTheme); });
+  }
 
   var ZODIAC_CUTOFFS = [
     [1,20,'山羊座'],[2,19,'水瓶座'],[3,20,'魚座'],[4,20,'牡羊座'],
@@ -564,7 +809,23 @@
     ['桜色','#E8B4BE'], ['金色','#B8912F'], ['白','#F2EDE3'], ['墨色','#2A211B'],
     ['空色','#6FA8C8'], ['紫','#6B4C7A'], ['橙色','#D97B3F'], ['深緑','#2F5D4F']
   ];
-  var ITEMS = ['お守り','御朱印帳','五円玉','折り鶴','扇子','手ぬぐい','おみくじの結び紐','御札','数珠','招き猫の置物'];
+  var CHARM_BENEFITS = ['縁結び','学業成就','商売繁盛','家内安全','健康長寿','交通安全','厄除け','金運上昇','必勝祈願','安産祈願','開運招福','良縁成就','心願成就','病気平癒','合格祈願','五穀豊穣','千客万来','無病息災','厄払い','福徳円満'];
+  var CHARM_TYPES = [
+    { suffix:'お守り', icon:'🔮' },
+    { suffix:'根付', icon:'🎐' },
+    { suffix:'鈴守り', icon:'🔔' },
+    { suffix:'御札', icon:'📜' },
+    { suffix:'絵馬', icon:'🖼️' }
+  ];
+  var ITEMS = [];
+  var CHARM_ICONS = {};
+  CHARM_BENEFITS.forEach(function(benefit){
+    CHARM_TYPES.forEach(function(type){
+      var name = benefit + 'の' + type.suffix;
+      ITEMS.push(name);
+      CHARM_ICONS[name] = type.icon;
+    });
+  });
   var ADVICE = ['迷ったら直感を信じて。','感謝の一言を忘れずに。','今日は誰かに頼ってみる日。','焦らずマイペースが吉。','小さな挑戦が運を開く。','整理整頓が運気を高める。','笑顔が一番の開運アイテム。','早起きは三文の徳あり。','人との縁を大切に。','今日という日を楽しんで。'];
   var BLOOD = {
     A:  ['几帳面な行動が今日は吉と出そう。','丁寧な仕事ぶりが評価される日。','慎重さが幸運を呼びます。'],
@@ -586,9 +847,208 @@
     try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch (e) {}
   }
 
+  /* ---------------- History (おみくじ帳) ---------------- */
+  function loadHistory(){
+    try { var raw = localStorage.getItem(HISTORY_KEY); return raw ? JSON.parse(raw) : []; } catch(e){ return []; }
+  }
+  function saveHistory(list){ try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list)); } catch(e){} }
+  function addHistoryEntry(entry){
+    var list = loadHistory();
+    if (list.length && list[list.length-1].date === entry.date) return;
+    list.push(entry);
+    saveHistory(list);
+  }
+  function formatHistoryDate(key){
+    var parts = key.split('-');
+    return parseInt(parts[1],10) + '月' + parseInt(parts[2],10) + '日';
+  }
+  function computeStreaks(history){
+    var dates = history.map(function(h){ return h.date; });
+    var longest = 0, run = 0, prev = null;
+    for (var i=0;i<dates.length;i++){
+      if (prev){
+        var diffDays = Math.round((new Date(dates[i]+'T00:00:00') - new Date(prev+'T00:00:00'))/86400000);
+        run = (diffDays === 1) ? run + 1 : 1;
+      } else {
+        run = 1;
+      }
+      if (run > longest) longest = run;
+      prev = dates[i];
+    }
+    var current = 0;
+    if (dates.length){
+      var lastGap = Math.round((new Date(dateKey+'T00:00:00') - new Date(dates[dates.length-1]+'T00:00:00'))/86400000);
+      if (lastGap <= 1){
+        current = 1;
+        for (var j=dates.length-1;j>0;j--){
+          var gap = Math.round((new Date(dates[j]+'T00:00:00') - new Date(dates[j-1]+'T00:00:00'))/86400000);
+          if (gap === 1) current += 1; else break;
+        }
+      }
+    }
+    return { current: current, longest: longest, total: dates.length };
+  }
+  function computeCollection(history){
+    var collected = {};
+    history.forEach(function(h){ collected[h.item] = true; });
+    return ITEMS.map(function(item){ return { name:item, collected: !!collected[item] }; });
+  }
+
+  /* ---------------- Notifications ---------------- */
+  function loadNotifyPref(){ try { return localStorage.getItem(NOTIFY_KEY) === '1'; } catch(e){ return false; } }
+  function saveNotifyPref(v){ try { localStorage.setItem(NOTIFY_KEY, v ? '1' : '0'); } catch(e){} }
+  var notifyEnabled = loadNotifyPref();
+
+  function toggleNotify(){
+    var LocalNotifications = getPlugin('LocalNotifications');
+    if (!LocalNotifications){
+      alert('この端末では通知機能を利用できません。');
+      return;
+    }
+    if (!notifyEnabled){
+      LocalNotifications.requestPermissions().then(function(res){
+        if (res.display !== 'granted'){
+          alert('通知が許可されませんでした。設定アプリから通知を許可してください。');
+          return;
+        }
+        return LocalNotifications.schedule({
+          notifications: [{
+            id: 1,
+            title: '今日のおみくじ',
+            body: '今日の運勢を引いてみましょう⛩',
+            schedule: { on: { hour: 9, minute: 0 } }
+          }]
+        }).then(function(){
+          notifyEnabled = true;
+          saveNotifyPref(true);
+          renderThemeScene();
+        });
+      }).catch(function(){ alert('通知の設定に失敗しました。'); });
+    } else {
+      LocalNotifications.cancel({ notifications:[{ id:1 }] }).then(function(){
+        notifyEnabled = false;
+        saveNotifyPref(false);
+        renderThemeScene();
+      });
+    }
+  }
+
+  /* ---------------- Share as image ---------------- */
+  function roundRect(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+    var chars = text.split('');
+    var line = '', lines = [];
+    for (var i=0;i<chars.length;i++){
+      var test = line + chars[i];
+      if (ctx.measureText(test).width > maxWidth && line){
+        lines.push(line);
+        line = chars[i];
+      } else {
+        line = test;
+      }
+    }
+    if (line) lines.push(line);
+    lines.forEach(function(l, idx){ ctx.fillText(l, x, y + idx*lineHeight); });
+    return lines.length;
+  }
+  function buildShareCanvas(result){
+    var canvas = document.createElement('canvas');
+    var W = 750, H = 1000;
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext('2d');
+    var theme = THEMES[currentTheme] || THEMES.shirogitsune;
+    var pal = isDarkMode() ? theme.dark : theme.light;
+    var pad = 40;
+
+    ctx.fillStyle = pal.paper; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = pal.card;
+    roundRect(ctx, pad, pad, W-pad*2, H-pad*2, 24); ctx.fill();
+    ctx.strokeStyle = pal.gold; ctx.lineWidth = 2;
+    roundRect(ctx, pad+16, pad+16, W-pad*2-32, H-pad*2-32, 16); ctx.stroke();
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = pal.inkSoft;
+    ctx.font = '28px "Hiragino Mincho ProN", serif';
+    ctx.fillText('第 ' + result.stickNumber + ' 番', W/2, pad+90);
+
+    ctx.strokeStyle = pal.vermillion; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.arc(W/2, pad+210, 90, 0, Math.PI*2); ctx.stroke();
+    ctx.fillStyle = pal.vermillion;
+    ctx.font = 'bold 60px "Hiragino Mincho ProN", serif';
+    ctx.fillText(result.rank, W/2, pad+230);
+
+    ctx.fillStyle = pal.inkSoft;
+    ctx.font = '26px "Hiragino Sans", sans-serif';
+    var overallLines = wrapText(ctx, result.overall, W/2, pad+340, W-pad*2-80, 36);
+
+    ctx.fillStyle = pal.ink;
+    ctx.font = '30px "Hiragino Mincho ProN", serif';
+    var adviceY = pad+340 + overallLines*36 + 60;
+    ctx.fillText('「' + result.advice + '」', W/2, adviceY);
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = result.colorHex;
+    ctx.beginPath(); ctx.arc(W/2-96, adviceY+80, 14, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = pal.ink; ctx.font = '24px "Hiragino Sans", sans-serif';
+    ctx.fillText('ラッキーカラー：' + result.colorName, W/2-70, adviceY+88);
+    ctx.fillText('ラッキーアイテム：' + result.item, W/2-70, adviceY+128);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = pal.inkSoft;
+    ctx.font = '22px "Hiragino Sans", sans-serif';
+    ctx.fillText('⛩ 今日のおみくじ ・ ' + theme.name, W/2, H-pad-30);
+
+    return canvas;
+  }
+  function fallbackShare(canvas){
+    try {
+      var url = canvas.toDataURL('image/png');
+      var w = window.open();
+      if (w) w.document.write('<img src="'+url+'" style="max-width:100%">');
+    } catch(e){}
+  }
+  function shareResult(result){
+    var canvas = buildShareCanvas(result);
+    canvas.toBlob(function(blob){
+      if (!blob) { fallbackShare(canvas); return; }
+      var reader = new FileReader();
+      reader.onloadend = function(){
+        var base64 = String(reader.result).split(',')[1];
+        var Filesystem = getPlugin('Filesystem');
+        var Share = getPlugin('Share');
+        if (Filesystem && Share){
+          var fileName = 'omikuji-' + dateKey + '.png';
+          Filesystem.writeFile({ path: fileName, data: base64, directory: 'CACHE' }).then(function(res){
+            return Share.share({
+              title: '今日のおみくじ',
+              text: result.rank + '「' + result.advice + '」',
+              files: [res.uri],
+              dialogTitle: '今日のおみくじをシェア'
+            });
+          }).catch(function(){ fallbackShare(canvas); });
+        } else {
+          fallbackShare(canvas);
+        }
+      };
+      reader.readAsDataURL(blob);
+    }, 'image/png');
+  }
+
   var profileScene = document.getElementById('profile-scene');
   var boxScene = document.getElementById('box-scene');
   var resultScene = document.getElementById('result-scene');
+  var historyScene = document.getElementById('history-scene');
+  var collectionScene = document.getElementById('collection-scene');
+  var themeScene = document.getElementById('theme-scene');
+  var tabBar = document.getElementById('tab-bar');
   var profileLabel = document.getElementById('profile-label');
   var changeBtn = document.getElementById('change-profile-btn');
   var birthInput = document.getElementById('birth-input');
@@ -599,6 +1059,108 @@
   birthInput.max = dateKey;
   var selectedGender = null;
   var selectedBlood = null;
+  var mainViewIsResult = false;
+
+  function setActiveTab(tab){
+    Array.prototype.slice.call(tabBar.querySelectorAll('.tab-btn')).forEach(function(b){
+      b.setAttribute('aria-pressed', b.getAttribute('data-tab') === tab ? 'true' : 'false');
+    });
+  }
+  function showTab(tab){
+    boxScene.hidden = true;
+    resultScene.hidden = true;
+    historyScene.hidden = true;
+    collectionScene.hidden = true;
+    themeScene.hidden = true;
+    setActiveTab(tab);
+    if (tab === 'main'){
+      if (mainViewIsResult) resultScene.hidden = false; else boxScene.hidden = false;
+    } else if (tab === 'history'){
+      renderHistoryScene();
+      historyScene.hidden = false;
+    } else if (tab === 'collection'){
+      renderCollectionScene();
+      collectionScene.hidden = false;
+    } else if (tab === 'theme'){
+      renderThemeScene();
+      themeScene.hidden = false;
+    }
+  }
+  Array.prototype.slice.call(tabBar.querySelectorAll('.tab-btn')).forEach(function(btn){
+    btn.addEventListener('click', function(){ showTab(btn.getAttribute('data-tab')); });
+  });
+
+  function renderHistoryScene(){
+    var history = loadHistory();
+    var streaks = computeStreaks(history);
+    var reversed = history.slice().reverse();
+    var html = '<div class="form-card fade-in">' +
+      '<div class="stat-row">' +
+        '<div class="stat"><div class="stat-num">' + streaks.current + '</div><div class="stat-label">連続日数</div></div>' +
+        '<div class="stat"><div class="stat-num">' + streaks.longest + '</div><div class="stat-label">最長記録</div></div>' +
+        '<div class="stat"><div class="stat-num">' + streaks.total + '</div><div class="stat-label">合計</div></div>' +
+      '</div>';
+    if (!reversed.length){
+      html += '<p class="empty-note">まだおみくじの記録がありません。<br>今日のおみくじを引いてみましょう。</p>';
+    } else {
+      html += '<div class="history-list">' + reversed.map(function(h){
+        return '<div class="history-item">' +
+          '<div class="history-date">' + formatHistoryDate(h.date) + '</div>' +
+          '<div class="history-rank">' + h.rank + '</div>' +
+          '<div class="history-text">' + h.overall + '</div>' +
+        '</div>';
+      }).join('') + '</div>';
+    }
+    html += '</div>';
+    historyScene.innerHTML = html;
+  }
+
+  function renderCollectionScene(){
+    var collection = computeCollection(loadHistory());
+    var collectedCount = collection.filter(function(c){ return c.collected; }).length;
+    var html = '<div class="form-card fade-in">' +
+      '<p class="collection-summary">' + collectedCount + ' / ' + collection.length + ' 授与品を集めました</p>' +
+      '<div class="charm-grid">' + collection.map(function(c){
+        var icon = CHARM_ICONS[c.name] || '❔';
+        return '<div class="charm-cell' + (c.collected ? '' : ' locked') + '">' +
+          '<div class="charm-icon">' + (c.collected ? icon : '？') + '</div>' +
+          '<div class="charm-name">' + (c.collected ? c.name : '未発見') + '</div>' +
+        '</div>';
+      }).join('') + '</div>' +
+    '</div>';
+    collectionScene.innerHTML = html;
+  }
+
+  function renderThemeScene(){
+    var html = '<div class="form-card fade-in">' +
+      '<div class="theme-grid">' + Object.keys(THEMES).map(function(id){
+        var t = THEMES[id];
+        var selected = id === currentTheme;
+        return '<button type="button" class="theme-card' + (selected ? ' selected' : '') + '" data-theme-id="' + id + '" ' +
+          'style="background:linear-gradient(135deg,' + t.light.paper + ',' + t.light.vermillion + ')">' +
+          '<div class="theme-name" style="color:' + t.light.ink + '">' + t.name + (selected ? ' ✓' : '') + '</div>' +
+          '<div class="theme-tagline" style="color:' + t.light.inkSoft + '">' + t.tagline + '</div>' +
+        '</button>';
+      }).join('') + '</div>' +
+      '<div class="settings-block">' +
+        '<p class="settings-label">毎日の通知</p>' +
+        '<button type="button" class="toggle-btn" id="notify-toggle" aria-pressed="' + notifyEnabled + '">' +
+          (notifyEnabled ? '通知：オン（毎朝9時にお知らせ）' : '通知：オフ（タップで有効化）') +
+        '</button>' +
+      '</div>' +
+    '</div>';
+    themeScene.innerHTML = html;
+    Array.prototype.slice.call(themeScene.querySelectorAll('.theme-card')).forEach(function(btn){
+      btn.addEventListener('click', function(){
+        currentTheme = btn.getAttribute('data-theme-id');
+        saveTheme(currentTheme);
+        applyTheme(currentTheme);
+        renderThemeScene();
+      });
+    });
+    var notifyBtn = document.getElementById('notify-toggle');
+    if (notifyBtn) notifyBtn.addEventListener('click', toggleNotify);
+  }
 
   function wirePillGroup(group, onSelect){
     var buttons = Array.prototype.slice.call(group.querySelectorAll('.pill'));
@@ -619,9 +1181,13 @@
   }
 
   function showProfileForm(existing){
+    tabBar.hidden = true;
     profileScene.hidden = false;
     boxScene.hidden = true;
     resultScene.hidden = true;
+    historyScene.hidden = true;
+    collectionScene.hidden = true;
+    themeScene.hidden = true;
     if (existing){
       birthInput.value = existing.year + '-' + String(existing.month).padStart(2,'0') + '-' + String(existing.day).padStart(2,'0');
       selectedGender = existing.gender;
@@ -647,6 +1213,8 @@
 
   function initApp(profile){
     changeBtn.hidden = false;
+    tabBar.hidden = false;
+    setActiveTab('main');
     var birthSign = zodiacSign(profile.month, profile.day);
     var birthEra = eraAnimal(profile.year);
     profileLabel.textContent = birthSign + ' ・ ' + birthEra + '年生まれ ・ ' + GENDER_LABEL[profile.gender] + ' ・ ' + profile.blood + '型';
@@ -690,6 +1258,7 @@
     }
 
     function renderResult(result, alreadyDrawn){
+      mainViewIsResult = true;
       resultScene.innerHTML =
         '<div class="slip fade-in">' +
           '<div class="slip-number">第 ' + result.stickNumber + ' 番</div>' +
@@ -705,15 +1274,19 @@
             row('小物', result.item) +
           '</div>' +
           '<p class="advice">' + result.advice + '</p>' +
+          '<button type="button" class="secondary-btn" id="share-btn">結果をシェア</button>' +
         '</div>' +
         (alreadyDrawn ? '<p class="already-note">本日はすでに引いています</p>' : '');
       resultScene.hidden = false;
       boxScene.hidden = true;
+      var shareBtn = document.getElementById('share-btn');
+      if (shareBtn) shareBtn.addEventListener('click', function(){ shareResult(result); });
     }
 
     var saved = null;
     try { var raw = localStorage.getItem(storageKey); if (raw) saved = JSON.parse(raw); } catch (e) {}
 
+    mainViewIsResult = false;
     boxScene.hidden = false;
     resultScene.hidden = true;
 
@@ -734,6 +1307,16 @@
         drawing = true;
         var result = draw();
         try { localStorage.setItem(storageKey, JSON.stringify(result)); } catch (e) {}
+        addHistoryEntry({
+          date: dateKey,
+          rank: result.rank,
+          overall: result.overall,
+          item: result.item,
+          colorName: result.colorName,
+          colorHex: result.colorHex,
+          advice: result.advice,
+          stickNumber: result.stickNumber
+        });
         stickNum.textContent = '第' + result.stickNumber + '番';
         btn.classList.add('shaking');
         setTimeout(function(){
