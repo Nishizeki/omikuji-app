@@ -107,6 +107,13 @@
     color:var(--ink-soft);
     letter-spacing:.08em;
   }
+  .season-badge{
+    font-size:.68rem;
+    color:var(--vermillion);
+    background:color-mix(in srgb, var(--vermillion) 12%, transparent);
+    padding:4px 12px;
+    border-radius:999px;
+  }
   .profile{
     font-size:.72rem;
     color:var(--gold);
@@ -127,7 +134,7 @@
   /* ---- Tab bar ---- */
   .tab-bar{
     display:flex;
-    gap:6px;
+    gap:5px;
     width:100%;
   }
   .tab-btn{
@@ -139,14 +146,14 @@
     background:transparent;
     border:1px solid color-mix(in srgb, var(--wood-deep) 40%, transparent);
     border-radius:10px;
-    padding:8px 4px;
+    padding:8px 2px;
     font:inherit;
-    font-size:.65rem;
     color:var(--ink-soft);
     cursor:pointer;
     transition:background .15s ease, color .15s ease, border-color .15s ease;
   }
-  .tab-btn .tab-icon{ font-size:1.05rem; }
+  .tab-btn .tab-icon{ font-size:1rem; }
+  .tab-btn .tab-label{ font-size:.6rem; line-height:1.15; }
   .tab-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
   .tab-btn[aria-pressed="true"]{
     background:var(--vermillion);
@@ -231,7 +238,7 @@
   .primary-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
 
   .secondary-btn{
-    margin-top:14px;
+    margin-top:12px;
     width:100%;
     background:transparent;
     border:1px solid var(--vermillion);
@@ -242,9 +249,10 @@
     font-weight:700;
     font-size:.88rem;
     cursor:pointer;
-    transition:background .15s ease;
+    transition:background .15s ease, opacity .15s ease;
   }
-  .secondary-btn:hover{ background:color-mix(in srgb, var(--vermillion) 12%, transparent); }
+  .secondary-btn:hover:not(:disabled){ background:color-mix(in srgb, var(--vermillion) 12%, transparent); }
+  .secondary-btn:disabled{ opacity:.5; cursor:default; }
   .secondary-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
 
   /* ---- Box scene ---- */
@@ -422,7 +430,7 @@
   .seal span{
     font-family:'Shippori Mincho', serif;
     font-weight:800;
-    font-size:1.6rem;
+    font-size:1.4rem;
     letter-spacing:.05em;
   }
   .overall-text{
@@ -430,6 +438,13 @@
     font-size:.92rem;
     color:var(--ink-soft);
     margin:2px 0 18px;
+    padding:0 6px;
+  }
+  .season-note{
+    text-align:center;
+    font-size:.76rem;
+    color:var(--vermillion);
+    margin:12px 0 0;
     padding:0 6px;
   }
 
@@ -530,6 +545,64 @@
     font-size:.85rem;
     padding:22px 6px;
   }
+  .month-summary{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    margin:14px 0 4px;
+    padding:12px 14px;
+    border-radius:8px;
+    background:color-mix(in srgb, var(--paper-deep) 35%, transparent);
+  }
+  .month-summary-title{
+    font-size:.72rem;
+    color:var(--ink-soft);
+    margin:0 0 4px;
+  }
+  .month-summary-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:.78rem;
+    color:var(--ink);
+  }
+  .month-summary-empty{
+    font-size:.76rem;
+    color:var(--ink-soft);
+    margin:0;
+  }
+
+  /* ---- Celebration overlay ---- */
+  .celebration-overlay{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:color-mix(in srgb, var(--ink) 45%, transparent);
+    z-index:1000;
+    padding:24px;
+    animation:celebrationFadeIn .3s ease both;
+  }
+  .celebration-overlay.celebration-hide{ animation:celebrationFadeOut .35s ease both; }
+  @keyframes celebrationFadeIn{ from{ opacity:0; } to{ opacity:1; } }
+  @keyframes celebrationFadeOut{ from{ opacity:1; } to{ opacity:0; } }
+  .celebration-card{
+    background:var(--card);
+    border:2px solid var(--gold);
+    border-radius:16px;
+    padding:30px 26px;
+    text-align:center;
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:1.1rem;
+    color:var(--vermillion);
+    box-shadow:0 20px 40px rgba(0,0,0,.35);
+    max-width:320px;
+    white-space:pre-line;
+    line-height:1.5;
+    animation:celebrationPop .4s cubic-bezier(.3,1.6,.4,1) both;
+  }
+  @keyframes celebrationPop{ from{ transform:scale(.7); opacity:0; } to{ transform:scale(1); opacity:1; } }
 
   /* ---- Collection scene ---- */
   .collection-summary{
@@ -561,7 +634,78 @@
   }
   .charm-cell.locked{ opacity:.4; filter:grayscale(1); }
   .charm-icon{ font-size:1.7rem; }
-  .charm-name{ font-size:.6rem; color:var(--ink-soft); line-height:1.25; }
+  .charm-name{ font-size:.58rem; color:var(--ink-soft); line-height:1.25; }
+
+  /* ---- Musubi (tying spot) scene ---- */
+  .musubi-board{
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+    max-height:52vh;
+    overflow-y:auto;
+    padding:4px 4px 10px;
+  }
+  .musubi-rope{
+    height:13px;
+    border-radius:7px;
+    background:
+      repeating-linear-gradient(115deg,
+        color-mix(in srgb, var(--wood) 100%, transparent) 0px,
+        color-mix(in srgb, var(--wood) 78%, black 12%) 3px,
+        var(--wood) 6px),
+      linear-gradient(180deg, var(--wood) 0%, var(--wood-deep) 100%);
+    box-shadow:0 2px 4px color-mix(in srgb, var(--ink) 25%, transparent);
+  }
+  .musubi-row{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    column-gap:14px;
+    row-gap:20px;
+    padding-top:16px;
+  }
+  .paper-strip{
+    width:26px;
+    height:52px;
+    background:var(--card);
+    border:1px solid color-mix(in srgb, var(--wood-deep) 40%, transparent);
+    border-radius:2px;
+    position:relative;
+    box-shadow:0 3px 6px color-mix(in srgb, var(--ink) 20%, transparent);
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    padding-bottom:5px;
+  }
+  .paper-strip::before{
+    content:"";
+    position:absolute;
+    top:16px; left:2px; right:2px;
+    height:1px;
+    background:color-mix(in srgb, var(--ink) 15%, transparent);
+  }
+  .paper-strip::after{
+    content:"";
+    position:absolute;
+    top:-16px; left:50%;
+    transform:translateX(-50%);
+    width:2px; height:16px;
+    background:color-mix(in srgb, var(--ink) 45%, transparent);
+  }
+  .knot-dot{
+    position:absolute;
+    top:6px; left:50%;
+    transform:translateX(-50%);
+    width:9px; height:9px;
+    border-radius:50%;
+    box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ink) 25%, transparent);
+  }
+  .knot-rank{
+    font-family:'Shippori Mincho', serif;
+    font-size:.56rem;
+    font-weight:700;
+    color:var(--vermillion);
+  }
 
   /* ---- Theme scene ---- */
   .theme-grid{
@@ -597,6 +741,12 @@
     font-size:.72rem;
     color:var(--ink-soft);
     margin:0 0 8px;
+  }
+  .bgm-credit{
+    font-size:.62rem;
+    color:var(--ink-soft);
+    margin:8px 0 0;
+    text-align:center;
   }
   .toggle-btn{
     width:100%;
@@ -635,27 +785,29 @@
 <div class="stage">
   <header>
     <div class="torii" aria-hidden="true">⛩</div>
-    <h1>今日のおみくじ</h1>
+    <h1 id="app-title">今日のおみくじ</h1>
     <div class="date" id="date-label"></div>
+    <div class="season-badge" id="season-badge" hidden></div>
     <div class="profile" id="profile-label"></div>
     <button type="button" class="edit-link" id="change-profile-btn" hidden>プロフィールを変更</button>
   </header>
 
   <nav class="tab-bar" id="tab-bar" aria-label="メニュー" hidden>
-    <button type="button" class="tab-btn" data-tab="main" aria-pressed="true"><span class="tab-icon" aria-hidden="true">⛩</span>おみくじ</button>
-    <button type="button" class="tab-btn" data-tab="history" aria-pressed="false"><span class="tab-icon" aria-hidden="true">📖</span>おみくじ帳</button>
-    <button type="button" class="tab-btn" data-tab="collection" aria-pressed="false"><span class="tab-icon" aria-hidden="true">🎁</span>授与品</button>
-    <button type="button" class="tab-btn" data-tab="theme" aria-pressed="false"><span class="tab-icon" aria-hidden="true">🎨</span>テーマ</button>
+    <button type="button" class="tab-btn" data-tab="main" aria-pressed="true"><span class="tab-icon" aria-hidden="true">⛩</span><span class="tab-label">おみくじ</span></button>
+    <button type="button" class="tab-btn" data-tab="history" aria-pressed="false"><span class="tab-icon" aria-hidden="true">📖</span><span class="tab-label">おみくじ帳</span></button>
+    <button type="button" class="tab-btn" data-tab="collection" aria-pressed="false"><span class="tab-icon" aria-hidden="true">🎁</span><span class="tab-label">授与品</span></button>
+    <button type="button" class="tab-btn" data-tab="musubi" aria-pressed="false"><span class="tab-icon" aria-hidden="true">🎗️</span><span class="tab-label">結び所</span></button>
+    <button type="button" class="tab-btn" data-tab="theme" aria-pressed="false"><span class="tab-icon" aria-hidden="true">🎨</span><span class="tab-label">テーマ</span></button>
   </nav>
 
   <div id="profile-scene" hidden>
     <div class="form-card">
       <div class="field">
-        <label class="field-label" for="birth-input">生年月日</label>
+        <label class="field-label" for="birth-input" id="birth-field-label">生年月日</label>
         <input type="date" id="birth-input" max="">
       </div>
       <div class="field">
-        <span class="field-label">性別</span>
+        <span class="field-label" id="gender-field-label">性別</span>
         <div class="pill-group" id="gender-group" role="radiogroup" aria-label="性別">
           <button type="button" class="pill" data-value="male" aria-pressed="false">男性</button>
           <button type="button" class="pill" data-value="female" aria-pressed="false">女性</button>
@@ -663,7 +815,7 @@
         </div>
       </div>
       <div class="field">
-        <span class="field-label">血液型</span>
+        <span class="field-label" id="blood-field-label">血液型</span>
         <div class="pill-group" id="blood-group" role="radiogroup" aria-label="血液型">
           <button type="button" class="pill" data-value="A" aria-pressed="false">A型</button>
           <button type="button" class="pill" data-value="B" aria-pressed="false">B型</button>
@@ -676,7 +828,7 @@
   </div>
 
   <div id="box-scene" hidden>
-    <p class="prompt">タップして今日の運勢を引きましょう</p>
+    <p class="prompt" id="draw-prompt">タップして今日の運勢を引きましょう</p>
     <div class="box-wrap">
       <div class="box-shadow" aria-hidden="true"></div>
       <button class="fortune-box" id="draw-btn" aria-label="おみくじを引く">
@@ -691,49 +843,159 @@
   <div id="result-scene" class="scene-panel" hidden></div>
   <div id="history-scene" class="scene-panel" hidden></div>
   <div id="collection-scene" class="scene-panel" hidden></div>
+  <div id="musubi-scene" class="scene-panel" hidden></div>
   <div id="theme-scene" class="scene-panel" hidden></div>
 
-  <footer>これは娯楽目的の占いです</footer>
+  <footer id="app-tagline">これは娯楽目的の占いです</footer>
 </div>
+
+<audio id="bgm-audio" src="audio/bgm.mp3" loop preload="auto"></audio>
 
 <script>
 (function(){
-  var dateEl = document.getElementById('date-label');
   var now = new Date();
   var y = now.getFullYear(), m = now.getMonth()+1, d = now.getDate();
-  var weekdays = ['日','月','火','水','木','金','土'];
-  dateEl.textContent = y + '年' + m + '月' + d + '日（' + weekdays[now.getDay()] + '）';
   var dateKey = y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
 
   var PROFILE_KEY = 'omikuji-profile-v1';
   var THEME_KEY = 'omikuji-theme-v1';
   var NOTIFY_KEY = 'omikuji-notify-v1';
-  var HISTORY_KEY = 'omikuji-history-v2';
-  var GENDER_LABEL = { male:'男性', female:'女性', other:'その他' };
+  var SOUND_KEY = 'omikuji-sound-v1';
+  var BGM_KEY = 'omikuji-bgm-v1';
+  var LANG_KEY = 'omikuji-lang-v1';
+  var HISTORY_KEY = 'omikuji-history-v3';
 
   function getPlugin(name){
     return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins[name]) || null;
   }
 
+  /* ---------------- i18n ---------------- */
+  function loadLang(){ try { var l = localStorage.getItem(LANG_KEY); return (l === 'en') ? 'en' : 'ja'; } catch(e){ return 'ja'; } }
+  function saveLang(l){ try { localStorage.setItem(LANG_KEY, l); } catch(e){} }
+  var lang = loadLang();
+
+  var STR = {
+    ja: {
+      appTitle:'今日のおみくじ', tagline:'これは娯楽目的の占いです',
+      changeProfile:'プロフィールを変更',
+      birthLabel:'生年月日', genderLabel:'性別', bloodLabel:'血液型',
+      genderLabels:{ male:'男性', female:'女性', other:'その他' },
+      submitDraw:'おみくじを引く', drawPrompt:'タップして今日の運勢を引きましょう',
+      tabMain:'おみくじ', tabHistory:'おみくじ帳', tabCollection:'授与品', tabMusubi:'結び所', tabTheme:'テーマ',
+      slipNumber:function(n){ return '第 ' + n + ' 番'; },
+      rowLove:'恋愛', rowWork:'仕事', rowMoney:'金運', rowHealth:'健康', rowBlood:'血液型', rowColor:'色', rowItem:'小物',
+      shareBtn:'結果をシェア', shareDialogTitle:'今日のおみくじをシェア',
+      tieBtn:'境内の結び所に結ぶ', tiedBtn:'結び所に結びました ✓',
+      alreadyNote:'本日はすでに引いています',
+      streakCurrent:'連続日数', streakLongest:'最長記録', streakTotal:'合計',
+      historyEmpty:'まだおみくじの記録がありません。今日のおみくじを引いてみましょう。',
+      collectionSummary:function(c,t){ return c + ' / ' + t + ' 授与品を集めました'; },
+      collectionLockedName:'未発見',
+      musubiEmpty:'まだ結び所に結ばれたおみくじがありません。今日の結果を結んでみましょう。',
+      musubiSummary:function(n){ return n + ' 件のおみくじが結ばれています'; },
+      monthSummaryTitle:'今月の記録',
+      monthSummaryEmpty:'今月はまだ記録がありません。',
+      celebrationStreak:function(n){ return '🎉 ' + n + '日連続達成！'; },
+      celebrationCollection:'🎊 授与品コンプリート！\n全100種を集めました',
+      settingsNotifyLabel:'毎日の通知',
+      notifyOn:'通知：オン（毎朝9時にお知らせ）', notifyOff:'通知：オフ（タップで有効化）',
+      notifyDenied:'通知が許可されませんでした。設定アプリから通知を許可してください。',
+      notifyFailed:'通知の設定に失敗しました。', notifyUnsupported:'この端末では通知機能を利用できません。',
+      settingsSoundLabel:'効果音', soundOn:'効果音：オン', soundOff:'効果音：オフ',
+      settingsBgmLabel:'環境音楽', bgmOn:'環境音楽：オン', bgmOff:'環境音楽：オフ（タップで再生）',
+      settingsLangLabel:'言語 / Language'
+    },
+    en: {
+      appTitle:"Today's Omikuji", tagline:'For entertainment purposes only.',
+      changeProfile:'Edit profile',
+      birthLabel:'Date of birth', genderLabel:'Gender', bloodLabel:'Blood type',
+      genderLabels:{ male:'Male', female:'Female', other:'Other' },
+      submitDraw:'Draw your fortune', drawPrompt:"Tap to draw today's fortune",
+      tabMain:'Draw', tabHistory:'Journal', tabCollection:'Charms', tabMusubi:'Tying Spot', tabTheme:'Theme',
+      slipNumber:function(n){ return 'No. ' + n; },
+      rowLove:'Love', rowWork:'Work', rowMoney:'Money', rowHealth:'Health', rowBlood:'Blood type', rowColor:'Color', rowItem:'Charm',
+      shareBtn:'Share result', shareDialogTitle:"Share today's omikuji",
+      tieBtn:'Tie it at the shrine', tiedBtn:'Tied ✓',
+      alreadyNote:"You've already drawn today.",
+      streakCurrent:'Streak', streakLongest:'Best streak', streakTotal:'Total',
+      historyEmpty:'No fortunes recorded yet. Draw one today!',
+      collectionSummary:function(c,t){ return c + ' / ' + t + ' charms collected'; },
+      collectionLockedName:'???',
+      musubiEmpty:'No fortunes tied yet. Tie your first one today.',
+      musubiSummary:function(n){ return n + ' fortunes tied'; },
+      monthSummaryTitle:'This Month',
+      monthSummaryEmpty:'No fortunes drawn this month yet.',
+      celebrationStreak:function(n){ return '🎉 ' + n + '-day streak!'; },
+      celebrationCollection:'🎊 Collection complete!\nAll 100 charms collected',
+      settingsNotifyLabel:'Daily reminder',
+      notifyOn:'Notifications: On (9am daily)', notifyOff:'Notifications: Off (tap to enable)',
+      notifyDenied:'Notifications were not allowed. Please enable them in Settings.',
+      notifyFailed:'Failed to set up notifications.', notifyUnsupported:'Notifications are not available on this device.',
+      settingsSoundLabel:'Sound effects', soundOn:'Sound: On', soundOff:'Sound: Off',
+      settingsBgmLabel:'Ambient music', bgmOn:'Music: On', bgmOff:'Music: Off (tap to play)',
+      settingsLangLabel:'Language / 言語'
+    }
+  };
+  function T(){ return STR[lang]; }
+
+  /* ---------------- Date / zodiac formatting ---------------- */
+  var ZODIAC_CUTOFFS = [[1,20],[2,19],[3,20],[4,20],[5,21],[6,21],[7,22],[8,23],[9,23],[10,23],[11,22],[12,21]];
+  var ZODIAC_NAMES = {
+    ja:['山羊座','水瓶座','魚座','牡羊座','牡牛座','双子座','蟹座','獅子座','乙女座','天秤座','蠍座','射手座'],
+    en:['Capricorn','Aquarius','Pisces','Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius']
+  };
+  function zodiacIndex(month, day){
+    for (var i=0;i<ZODIAC_CUTOFFS.length;i++){
+      if (month === ZODIAC_CUTOFFS[i][0] && day <= ZODIAC_CUTOFFS[i][1]) return i;
+    }
+    return 0;
+  }
+  var ERA_NAMES = {
+    ja:['申','酉','戌','亥','子','丑','寅','卯','辰','巳','午','未'],
+    en:['Monkey','Rooster','Dog','Pig','Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat']
+  };
+  function eraIndex(year){ return (year - 2004 + 1200) % 12; }
+  var WEEKDAYS = { ja:['日','月','火','水','木','金','土'], en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] };
+  var MONTHS_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var MONTHS_EN_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function formatHeaderDate(){
+    if (lang === 'en') return MONTHS_EN[m-1] + ' ' + d + ', ' + y + ' (' + WEEKDAYS.en[now.getDay()] + ')';
+    return y + '年' + m + '月' + d + '日（' + WEEKDAYS.ja[now.getDay()] + '）';
+  }
+  function bloodDisplay(v){ return lang === 'en' ? ('Type ' + v) : (v + '型'); }
+  function formatProfileLabel(profile){
+    var zodiacName = ZODIAC_NAMES[lang][zodiacIndex(profile.month, profile.day)];
+    var eraName = ERA_NAMES[lang][eraIndex(profile.year)];
+    var genderText = T().genderLabels[profile.gender];
+    if (lang === 'en') return zodiacName + ' ・ Year of the ' + eraName + ' ・ ' + genderText + ' ・ Type ' + profile.blood;
+    return zodiacName + ' ・ ' + eraName + '年生まれ ・ ' + genderText + ' ・ ' + profile.blood + '型';
+  }
+  function formatHistoryDate(key){
+    var parts = key.split('-');
+    var mo = parseInt(parts[1],10), da = parseInt(parts[2],10);
+    if (lang === 'en') return MONTHS_EN_SHORT[mo-1] + ' ' + da;
+    return mo + '月' + da + '日';
+  }
+
   /* ---------------- Themes (original, fictional shrine motifs) ---------------- */
   var THEMES = {
     shirogitsune: {
-      name:'白狐の社', tagline:'定番の朱色と金色',
+      name:{ ja:'白狐の社', en:'Shirogitsune Shrine' }, tagline:{ ja:'定番の朱色と金色', en:'Classic vermillion and gold' },
       light:{ paper:'#F6EFDD', paperDeep:'#E8D8AE', card:'#FBF6E9', ink:'#2A211B', inkSoft:'#6B5C48', vermillion:'#C13B3B', vermillionDeep:'#8C2020', gold:'#B8912F', indigo:'#33415C', wood:'#C7A567', woodDeep:'#9C7A40', woodDark:'#7A5E30', hole:'#3A2C18', focus:'#33415C' },
       dark:{ paper:'#1B1712', paperDeep:'#120E0B', card:'#211B14', ink:'#EFE3D2', inkSoft:'#B9A98D', vermillion:'#D96A55', vermillionDeep:'#A5341F', gold:'#D4AF5A', indigo:'#8B9DBE', wood:'#6E5636', woodDeep:'#4A3A22', woodDark:'#2E2414', hole:'#0B0806', focus:'#D4AF5A' }
     },
     yamagiri: {
-      name:'山霧の社', tagline:'深緑と霧のしじま',
+      name:{ ja:'山霧の社', en:'Yamagiri Shrine' }, tagline:{ ja:'深緑と霧のしじま', en:'Deep green and misty stillness' },
       light:{ paper:'#EEF3EA', paperDeep:'#D9E4D2', card:'#F7FAF4', ink:'#20281F', inkSoft:'#5B6B54', vermillion:'#3E7A52', vermillionDeep:'#2A5A3A', gold:'#8FA24A', indigo:'#35594F', wood:'#9CB08A', woodDeep:'#71875F', woodDark:'#586B47', hole:'#22301E', focus:'#35594F' },
       dark:{ paper:'#131A12', paperDeep:'#0C110B', card:'#182018', ink:'#E4EEDF', inkSoft:'#A9BBA0', vermillion:'#6FBE86', vermillionDeep:'#3F8256', gold:'#B9CE7C', indigo:'#8FB3A4', wood:'#4C5E42', woodDeep:'#39472F', woodDark:'#242D1D', hole:'#080B07', focus:'#B9CE7C' }
     },
     yukidoke: {
-      name:'雪解けの宮', tagline:'冬空の藍と白銀',
+      name:{ ja:'雪解けの宮', en:'Yukidoke Shrine' }, tagline:{ ja:'冬空の藍と白銀', en:'Winter indigo and silver snow' },
       light:{ paper:'#EEF3F8', paperDeep:'#D6E3EE', card:'#F8FBFD', ink:'#20272E', inkSoft:'#59677A', vermillion:'#3C6FA6', vermillionDeep:'#254C78', gold:'#9FB9C9', indigo:'#2E3E5C', wood:'#AFC4D6', woodDeep:'#7E9AB0', woodDark:'#5F7A8E', hole:'#1E2A33', focus:'#2E3E5C' },
       dark:{ paper:'#10151C', paperDeep:'#0A0E13', card:'#151C24', ink:'#E1EAF2', inkSoft:'#9DB0C2', vermillion:'#6FA3D6', vermillionDeep:'#3E6D9C', gold:'#BFD3DF', indigo:'#8FA8C9', wood:'#3D5163', woodDeep:'#2C3B49', woodDark:'#1C2731', hole:'#070A0D', focus:'#BFD3DF' }
     },
     koyo: {
-      name:'紅葉の杜', tagline:'紅葉と夕暮れの紫',
+      name:{ ja:'紅葉の杜', en:'Koyo Shrine' }, tagline:{ ja:'紅葉と夕暮れの紫', en:'Autumn leaves and dusky purple' },
       light:{ paper:'#F8EFE7', paperDeep:'#EEDAC6', card:'#FDF5EC', ink:'#2E1F1A', inkSoft:'#7A5C4A', vermillion:'#C1602E', vermillionDeep:'#8F3F17', gold:'#B8752F', indigo:'#5C3A5E', wood:'#C79A67', woodDeep:'#9C6E40', woodDark:'#7A5230', hole:'#3A2418', focus:'#5C3A5E' },
       dark:{ paper:'#1C130F', paperDeep:'#130D0A', card:'#211712', ink:'#F1E1D2', inkSoft:'#C2A48D', vermillion:'#E08A5A', vermillionDeep:'#B0562A', gold:'#D9A45C', indigo:'#B98FBB', wood:'#6E4A36', woodDeep:'#4A3122', woodDark:'#2E1E14', hole:'#0B0705', focus:'#D9A45C' }
     }
@@ -755,143 +1017,156 @@
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){ applyTheme(currentTheme); });
   }
 
-  var ZODIAC_CUTOFFS = [
-    [1,20,'山羊座'],[2,19,'水瓶座'],[3,20,'魚座'],[4,20,'牡羊座'],
-    [5,21,'牡牛座'],[6,21,'双子座'],[7,22,'蟹座'],[8,23,'獅子座'],
-    [9,23,'乙女座'],[10,23,'天秤座'],[11,22,'蠍座'],[12,21,'射手座']
+  /* ---------------- Seasonal events ---------------- */
+  var SEASONAL_EVENTS = [
+    { startM:1, startD:1, endM:1, endD:3, emoji:'🎍', name:{ ja:'初詣', en:'Hatsumode' }, note:{ ja:'一年の始まりに、心新たに一年の無事を祈る特別な時期です。', en:"The first shrine visit of the year — a time to start fresh and pray for a safe year ahead." } },
+    { startM:2, startD:3, endM:2, endD:3, emoji:'👹', name:{ ja:'節分', en:'Setsubun' }, note:{ ja:'邪気を払い、福を呼び込むとされる日です。', en:'A day said to drive away evil spirits and welcome good fortune.' } },
+    { startM:6, startD:30, endM:6, endD:30, emoji:'🌾', name:{ ja:'夏越の祓', en:'Nagoshi no Harae' }, note:{ ja:'半年の穢れを祓い、残り半年の無病息災を祈る日です。', en:'A midyear purification, praying for good health through the rest of the year.' } },
+    { startM:7, startD:7, endM:7, endD:7, emoji:'🎋', name:{ ja:'七夕', en:'Tanabata' }, note:{ ja:'願い事が届きやすいとされる特別な日です。', en:'A special day when wishes are said to reach the stars more easily.' } }
   ];
-  function zodiacSign(month, day){
-    for (var i=0;i<ZODIAC_CUTOFFS.length;i++){
-      if (month === ZODIAC_CUTOFFS[i][0] && day <= ZODIAC_CUTOFFS[i][1]) return ZODIAC_CUTOFFS[i][2];
+  function getActiveSeasonalEvent(){
+    for (var i=0;i<SEASONAL_EVENTS.length;i++){
+      var e = SEASONAL_EVENTS[i];
+      var afterStart = (m > e.startM) || (m === e.startM && d >= e.startD);
+      var beforeEnd = (m < e.endM) || (m === e.endM && d <= e.endD);
+      if (afterStart && beforeEnd) return e;
     }
-    return '山羊座';
+    return null;
   }
-  var ERA_ANIMALS = ['申','酉','戌','亥','子','丑','寅','卯','辰','巳','午','未'];
-  function eraAnimal(year){ return ERA_ANIMALS[(year - 2004 + 1200) % 12]; }
+  var activeEvent = getActiveSeasonalEvent();
 
-  function hashString(str){
-    var h = 1779033703 ^ str.length;
-    for (var i=0; i<str.length; i++){
-      h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
-      h = (h << 13) | (h >>> 19);
+  /* ---------------- Sound effects (synthesized, no audio files needed) ---------------- */
+  function loadSoundPref(){ try { return localStorage.getItem(SOUND_KEY) === '1'; } catch(e){ return false; } }
+  function saveSoundPref(v){ try { localStorage.setItem(SOUND_KEY, v ? '1' : '0'); } catch(e){} }
+  var soundEnabled = loadSoundPref();
+  var audioCtx = null;
+  function getAudioCtx(){
+    if (!audioCtx){
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (Ctx) { try { audioCtx = new Ctx(); } catch(e){} }
     }
-    return function(){
-      h = Math.imul(h ^ (h >>> 16), 2246822507);
-      h = Math.imul(h ^ (h >>> 13), 3266489909);
-      h ^= h >>> 16;
-      return h >>> 0;
-    };
+    return audioCtx;
   }
-  function mulberry32(seed){
-    var a = seed;
-    return function(){
-      a |= 0; a = (a + 0x6D2B79F5) | 0;
-      var t = Math.imul(a ^ (a >>> 15), 1 | a);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
+  function createNoiseBuffer(ctx, duration){
+    var size = Math.max(1, Math.floor(ctx.sampleRate * duration));
+    var buffer = ctx.createBuffer(1, size, ctx.sampleRate);
+    var data = buffer.getChannelData(0);
+    for (var i=0;i<size;i++){ data[i] = Math.random()*2-1; }
+    return buffer;
   }
-
-  var RANKS = [
-    { name:'大吉', weight:12, text:'何をしても上手くいく、最高の一日。迷わず動きましょう。' },
-    { name:'中吉', weight:18, text:'運気は上向き。焦らず一歩ずつ進めば実を結びます。' },
-    { name:'小吉', weight:20, text:'小さな幸運がそっと訪れる日。見逃さないように。' },
-    { name:'吉',   weight:24, text:'穏やかで安定した運気。いつも通りが一番。' },
-    { name:'末吉', weight:18, text:'今はまだ種まきの時期。焦らず力を蓄えて。' },
-    { name:'凶',   weight:8,  text:'慎重な行動を。無理をせず今日はゆっくり過ごして。' }
-  ];
-  var LOVE = ['素直な気持ちが吉と出る日。','相手の話にじっくり耳を傾けて。','新しい出会いの気配あり。','今は距離感を大切に。','感謝の言葉が縁を深める。'];
-  var WORK = ['集中力が高まる時間帯あり、午前中が勝負。','周囲との連携が成果を生む。','焦らず一つずつ片付けるのが吉。','新しい提案が思わぬ評価を得る。','確認作業を怠らないこと。'];
-  var MONEY = ['衝動買いは控えめに。','自己投資への出費は吉。','臨時収入の兆しあり。','貯蓄を見直す良い機会。','人におごると運気アップ。'];
-  var HEALTH = ['軽い運動が運気を後押し。','睡眠の質を見直して。','水分補給を忘れずに。','深呼吸でリフレッシュ。','無理せず休息も大切に。'];
-  var COLORS = [
-    ['朱色','#C13B3B'], ['藍色','#33415C'], ['山吹色','#E0A526'], ['若草色','#7CA24A'],
-    ['桜色','#E8B4BE'], ['金色','#B8912F'], ['白','#F2EDE3'], ['墨色','#2A211B'],
-    ['空色','#6FA8C8'], ['紫','#6B4C7A'], ['橙色','#D97B3F'], ['深緑','#2F5D4F']
-  ];
-  var CHARM_BENEFITS = ['縁結び','学業成就','商売繁盛','家内安全','健康長寿','交通安全','厄除け','金運上昇','必勝祈願','安産祈願','開運招福','良縁成就','心願成就','病気平癒','合格祈願','五穀豊穣','千客万来','無病息災','厄払い','福徳円満'];
-  var CHARM_TYPES = [
-    { suffix:'お守り', icon:'🔮' },
-    { suffix:'根付', icon:'🎐' },
-    { suffix:'鈴守り', icon:'🔔' },
-    { suffix:'御札', icon:'📜' },
-    { suffix:'絵馬', icon:'🖼️' }
-  ];
-  var ITEMS = [];
-  var CHARM_ICONS = {};
-  CHARM_BENEFITS.forEach(function(benefit){
-    CHARM_TYPES.forEach(function(type){
-      var name = benefit + 'の' + type.suffix;
-      ITEMS.push(name);
-      CHARM_ICONS[name] = type.icon;
-    });
-  });
-  var ADVICE = ['迷ったら直感を信じて。','感謝の一言を忘れずに。','今日は誰かに頼ってみる日。','焦らずマイペースが吉。','小さな挑戦が運を開く。','整理整頓が運気を高める。','笑顔が一番の開運アイテム。','早起きは三文の徳あり。','人との縁を大切に。','今日という日を楽しんで。'];
-  var BLOOD = {
-    A:  ['几帳面な行動が今日は吉と出そう。','丁寧な仕事ぶりが評価される日。','慎重さが幸運を呼びます。'],
-    B:  ['マイペースさが人を惹きつける日。','自由な発想がひらめきを生む。','思い立ったら即行動が吉。'],
-    O:  ['おおらかな気持ちが運気を上げる。','面倒見の良さが感謝される日。','大胆な一歩が道を開く。'],
-    AB: ['冷静な判断が功を奏す日。','二面性がむしろ強みになる。','独自の視点が周りを驚かせる。']
-  };
-
-  function loadProfile(){
+  function playPaperRustle(){
+    if (!soundEnabled) return;
+    var ctx = getAudioCtx();
+    if (!ctx) return;
+    if (ctx.state === 'suspended') ctx.resume();
+    var now = ctx.currentTime;
+    var dur = 0.32;
+    var noise = ctx.createBufferSource();
+    noise.buffer = createNoiseBuffer(ctx, dur);
+    var highpass = ctx.createBiquadFilter();
+    highpass.type = 'highpass';
+    highpass.frequency.value = 2200;
+    var gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(0.16, now + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    noise.connect(highpass);
+    highpass.connect(gain);
+    gain.connect(ctx.destination);
+    noise.start(now);
+    noise.stop(now + dur + 0.02);
+  }
+  function playDrawSound(){
+    if (!soundEnabled) return;
     try {
-      var raw = localStorage.getItem(PROFILE_KEY);
-      if (!raw) return null;
-      var p = JSON.parse(raw);
-      if (p && p.year && p.month && p.day && p.gender && p.blood) return p;
-      return null;
-    } catch (e) { return null; }
+      var sfx = new Audio('audio/draw.mp3');
+      sfx.volume = 0.9;
+      sfx.play().catch(function(){});
+    } catch(e){}
   }
-  function saveProfile(p){
-    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch (e) {}
+  function playRankSound(rankIndex){
+    if (!soundEnabled) return;
+    var file = 'audio/rank-normal.mp3';
+    if (rankIndex === 0) file = 'audio/rank-high.mp3';
+    else if (rankIndex === 5) file = 'audio/rank-low.mp3';
+    try {
+      var sfx = new Audio(file);
+      sfx.volume = 0.8;
+      sfx.play().catch(function(){});
+    } catch(e){}
   }
 
-  /* ---------------- History (おみくじ帳) ---------------- */
-  function loadHistory(){
-    try { var raw = localStorage.getItem(HISTORY_KEY); return raw ? JSON.parse(raw) : []; } catch(e){ return []; }
+  /* ---------------- Haptics ---------------- */
+  function hapticImpact(style){
+    var Haptics = getPlugin('Haptics');
+    if (Haptics) Haptics.impact({ style: style }).catch(function(){});
   }
-  function saveHistory(list){ try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list)); } catch(e){} }
-  function addHistoryEntry(entry){
-    var list = loadHistory();
-    if (list.length && list[list.length-1].date === entry.date) return;
-    list.push(entry);
-    saveHistory(list);
+  function hapticNotification(type){
+    var Haptics = getPlugin('Haptics');
+    if (Haptics) Haptics.notification({ type: type }).catch(function(){});
   }
-  function formatHistoryDate(key){
-    var parts = key.split('-');
-    return parseInt(parts[1],10) + '月' + parseInt(parts[2],10) + '日';
+  function hapticForDraw(){ hapticImpact('MEDIUM'); }
+  function hapticForRank(rankIndex){
+    if (rankIndex === 0) hapticNotification('SUCCESS');
+    else if (rankIndex === 5) hapticNotification('WARNING');
+    else hapticImpact('LIGHT');
   }
-  function computeStreaks(history){
-    var dates = history.map(function(h){ return h.date; });
-    var longest = 0, run = 0, prev = null;
-    for (var i=0;i<dates.length;i++){
-      if (prev){
-        var diffDays = Math.round((new Date(dates[i]+'T00:00:00') - new Date(prev+'T00:00:00'))/86400000);
-        run = (diffDays === 1) ? run + 1 : 1;
-      } else {
-        run = 1;
+  function hapticForTie(){ hapticImpact('LIGHT'); }
+
+  /* ---------------- Ambient music (looping track) ---------------- */
+  function loadBgmPref(){ try { return localStorage.getItem(BGM_KEY) === '1'; } catch(e){ return false; } }
+  function saveBgmPref(v){ try { localStorage.setItem(BGM_KEY, v ? '1' : '0'); } catch(e){} }
+  var bgmEnabled = loadBgmPref();
+  var bgmAudio = document.getElementById('bgm-audio');
+  var bgmFadeTimer = null;
+  function fadeBgmVolume(target, duration){
+    if (bgmFadeTimer) clearInterval(bgmFadeTimer);
+    var steps = 20;
+    var startVol = bgmAudio.volume;
+    var diff = target - startVol;
+    var count = 0;
+    bgmFadeTimer = setInterval(function(){
+      count++;
+      bgmAudio.volume = Math.max(0, Math.min(1, startVol + diff * (count/steps)));
+      if (count >= steps){
+        clearInterval(bgmFadeTimer);
+        bgmFadeTimer = null;
+        if (target === 0) bgmAudio.pause();
       }
-      if (run > longest) longest = run;
-      prev = dates[i];
-    }
-    var current = 0;
-    if (dates.length){
-      var lastGap = Math.round((new Date(dateKey+'T00:00:00') - new Date(dates[dates.length-1]+'T00:00:00'))/86400000);
-      if (lastGap <= 1){
-        current = 1;
-        for (var j=dates.length-1;j>0;j--){
-          var gap = Math.round((new Date(dates[j]+'T00:00:00') - new Date(dates[j-1]+'T00:00:00'))/86400000);
-          if (gap === 1) current += 1; else break;
-        }
-      }
-    }
-    return { current: current, longest: longest, total: dates.length };
+    }, duration/steps);
   }
-  function computeCollection(history){
-    var collected = {};
-    history.forEach(function(h){ collected[h.item] = true; });
-    return ITEMS.map(function(item){ return { name:item, collected: !!collected[item] }; });
+  function startBgm(){
+    bgmAudio.volume = 0;
+    bgmAudio.play().catch(function(){});
+    fadeBgmVolume(0.4, 1200);
+  }
+  function stopBgm(){
+    fadeBgmVolume(0, 250);
+  }
+  function toggleBgm(){
+    bgmEnabled = !bgmEnabled;
+    saveBgmPref(bgmEnabled);
+    if (bgmEnabled) startBgm(); else stopBgm();
+    renderThemeScene();
+  }
+  function pauseBgmImmediately(){
+    if (bgmFadeTimer) { clearInterval(bgmFadeTimer); bgmFadeTimer = null; }
+    if (!bgmAudio.paused) bgmAudio.pause();
+  }
+  function resumeBgmIfEnabled(){
+    if (bgmEnabled && bgmAudio.paused){
+      if (bgmAudio.volume < 0.05) bgmAudio.volume = 0.4;
+      bgmAudio.play().catch(function(){});
+    }
+  }
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) pauseBgmImmediately(); else resumeBgmIfEnabled();
+  });
+  var CapApp = getPlugin('App');
+  if (CapApp){
+    CapApp.addListener('appStateChange', function(state){
+      if (!state.isActive) pauseBgmImmediately(); else resumeBgmIfEnabled();
+    });
   }
 
   /* ---------------- Notifications ---------------- */
@@ -902,20 +1177,20 @@
   function toggleNotify(){
     var LocalNotifications = getPlugin('LocalNotifications');
     if (!LocalNotifications){
-      alert('この端末では通知機能を利用できません。');
+      alert(T().notifyUnsupported);
       return;
     }
     if (!notifyEnabled){
       LocalNotifications.requestPermissions().then(function(res){
         if (res.display !== 'granted'){
-          alert('通知が許可されませんでした。設定アプリから通知を許可してください。');
+          alert(T().notifyDenied);
           return;
         }
         return LocalNotifications.schedule({
           notifications: [{
             id: 1,
-            title: '今日のおみくじ',
-            body: '今日の運勢を引いてみましょう⛩',
+            title: T().appTitle,
+            body: lang === 'en' ? "Draw today's fortune ⛩" : '今日の運勢を引いてみましょう⛩',
             schedule: { on: { hour: 9, minute: 0 } }
           }]
         }).then(function(){
@@ -923,7 +1198,7 @@
           saveNotifyPref(true);
           renderThemeScene();
         });
-      }).catch(function(){ alert('通知の設定に失敗しました。'); });
+      }).catch(function(){ alert(T().notifyFailed); });
     } else {
       LocalNotifications.cancel({ notifications:[{ id:1 }] }).then(function(){
         notifyEnabled = false;
@@ -977,12 +1252,12 @@
     ctx.textAlign = 'center';
     ctx.fillStyle = pal.inkSoft;
     ctx.font = '28px "Hiragino Mincho ProN", serif';
-    ctx.fillText('第 ' + result.stickNumber + ' 番', W/2, pad+90);
+    ctx.fillText(T().slipNumber(result.stickNumber), W/2, pad+90);
 
     ctx.strokeStyle = pal.vermillion; ctx.lineWidth = 6;
     ctx.beginPath(); ctx.arc(W/2, pad+210, 90, 0, Math.PI*2); ctx.stroke();
     ctx.fillStyle = pal.vermillion;
-    ctx.font = 'bold 60px "Hiragino Mincho ProN", serif';
+    ctx.font = 'bold 56px "Hiragino Mincho ProN", serif';
     ctx.fillText(result.rank, W/2, pad+230);
 
     ctx.fillStyle = pal.inkSoft;
@@ -998,13 +1273,13 @@
     ctx.fillStyle = result.colorHex;
     ctx.beginPath(); ctx.arc(W/2-96, adviceY+80, 14, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = pal.ink; ctx.font = '24px "Hiragino Sans", sans-serif';
-    ctx.fillText('ラッキーカラー：' + result.colorName, W/2-70, adviceY+88);
-    ctx.fillText('ラッキーアイテム：' + result.item, W/2-70, adviceY+128);
+    ctx.fillText(T().rowColor + '：' + result.colorName, W/2-70, adviceY+88);
+    ctx.fillText(T().rowItem + '：' + result.item, W/2-70, adviceY+128);
 
     ctx.textAlign = 'center';
     ctx.fillStyle = pal.inkSoft;
     ctx.font = '22px "Hiragino Sans", sans-serif';
-    ctx.fillText('⛩ 今日のおみくじ ・ ' + theme.name, W/2, H-pad-30);
+    ctx.fillText('⛩ ' + T().appTitle + ' ・ ' + theme.name[lang], W/2, H-pad-30);
 
     return canvas;
   }
@@ -1028,10 +1303,10 @@
           var fileName = 'omikuji-' + dateKey + '.png';
           Filesystem.writeFile({ path: fileName, data: base64, directory: 'CACHE' }).then(function(res){
             return Share.share({
-              title: '今日のおみくじ',
+              title: T().appTitle,
               text: result.rank + '「' + result.advice + '」',
               files: [res.uri],
-              dialogTitle: '今日のおみくじをシェア'
+              dialogTitle: T().shareDialogTitle
             });
           }).catch(function(){ fallbackShare(canvas); });
         } else {
@@ -1042,24 +1317,252 @@
     }, 'image/png');
   }
 
+  /* ---------------- Fortune content (JA/EN) ---------------- */
+  var RANKS = {
+    ja: [
+      { name:'大吉', weight:12, text:'何をしても上手くいく、最高の一日。迷わず動きましょう。' },
+      { name:'中吉', weight:18, text:'運気は上向き。焦らず一歩ずつ進めば実を結びます。' },
+      { name:'小吉', weight:20, text:'小さな幸運がそっと訪れる日。見逃さないように。' },
+      { name:'吉',   weight:24, text:'穏やかで安定した運気。いつも通りが一番。' },
+      { name:'末吉', weight:18, text:'今はまだ種まきの時期。焦らず力を蓄えて。' },
+      { name:'凶',   weight:8,  text:'慎重な行動を。無理をせず今日はゆっくり過ごして。' }
+    ],
+    en: [
+      { name:'Great Blessing', weight:12, text:'Everything goes your way today — the best day of all. Act without hesitation.' },
+      { name:'Blessing', weight:18, text:'Your luck is rising. Take it step by step and it will bear fruit.' },
+      { name:'Small Blessing', weight:20, text:"A small stroke of luck may visit quietly today. Don't miss it." },
+      { name:'Good Fortune', weight:24, text:'Calm and steady luck. Your usual routine is best today.' },
+      { name:'Near Blessing', weight:18, text:'Still a time for planting seeds. Be patient and build your strength.' },
+      { name:'Caution', weight:8, text:"Proceed carefully. Don't push yourself — take it slow today." }
+    ]
+  };
+  var LOVE = {
+    ja: ['素直な気持ちが吉と出る日。','相手の話にじっくり耳を傾けて。','新しい出会いの気配あり。','今は距離感を大切に。','感謝の言葉が縁を深める。'],
+    en: ['Being honest with your feelings brings good luck today.','Listen closely to what your partner says.','A new encounter may be on the horizon.','Keep a comfortable distance for now.','A word of thanks deepens your bond.']
+  };
+  var WORK = {
+    ja: ['集中力が高まる時間帯あり、午前中が勝負。','周囲との連携が成果を生む。','焦らず一つずつ片付けるのが吉。','新しい提案が思わぬ評価を得る。','確認作業を怠らないこと。'],
+    en: ["Your focus peaks in the morning — that's your window.",'Teamwork brings good results today.','Take it one step at a time without rushing.','A new proposal may get unexpected praise.',"Don't skip double-checking your work."]
+  };
+  var MONEY = {
+    ja: ['衝動買いは控えめに。','自己投資への出費は吉。','臨時収入の兆しあり。','貯蓄を見直す良い機会。','人におごると運気アップ。'],
+    en: ['Keep impulse purchases in check.','Spending on self-improvement is favorable.','A sign of unexpected income.','A good time to review your savings.',"Treating someone else boosts your fortune."]
+  };
+  var HEALTH = {
+    ja: ['軽い運動が運気を後押し。','睡眠の質を見直して。','水分補給を忘れずに。','深呼吸でリフレッシュ。','無理せず休息も大切に。'],
+    en: ['Light exercise gives your luck a boost.','Reconsider the quality of your sleep.',"Don't forget to stay hydrated.",'A deep breath will refresh you.',"Rest is important — don't overdo it."]
+  };
+  var ADVICE = {
+    ja: ['迷ったら直感を信じて。','感謝の一言を忘れずに。','今日は誰かに頼ってみる日。','焦らずマイペースが吉。','小さな挑戦が運を開く。','整理整頓が運気を高める。','笑顔が一番の開運アイテム。','早起きは三文の徳あり。','人との縁を大切に。','今日という日を楽しんで。'],
+    en: ['When in doubt, trust your instincts.',"Don't forget a word of thanks.",'Today is a day to lean on someone.','Going at your own pace is best.','A small challenge opens the door to luck.','Tidying up raises your fortune.','A smile is the best charm of all.','The early bird catches the worm.','Cherish the bonds with people around you.','Enjoy today for what it is.']
+  };
+  var BLOOD = {
+    ja: {
+      A:  ['几帳面な行動が今日は吉と出そう。','丁寧な仕事ぶりが評価される日。','慎重さが幸運を呼びます。'],
+      B:  ['マイペースさが人を惹きつける日。','自由な発想がひらめきを生む。','思い立ったら即行動が吉。'],
+      O:  ['おおらかな気持ちが運気を上げる。','面倒見の良さが感謝される日。','大胆な一歩が道を開く。'],
+      AB: ['冷静な判断が功を奏す日。','二面性がむしろ強みになる。','独自の視点が周りを驚かせる。']
+    },
+    en: {
+      A:  ['Being meticulous works in your favor today.','Careful, thorough work earns recognition.','Caution invites good fortune.'],
+      B:  ['Your free spirit draws people in today.','A free-thinking idea sparks inspiration.',"Act the moment you decide — that's lucky."],
+      O:  ['A generous attitude raises your luck.','Your caring nature is appreciated today.','A bold step opens the way.'],
+      AB: ["A calm judgment pays off today.",'Your duality becomes your strength.','A unique perspective surprises those around you.']
+    }
+  };
+  var COLOR_HEXES = ['#C13B3B','#33415C','#E0A526','#7CA24A','#E8B4BE','#B8912F','#F2EDE3','#2A211B','#6FA8C8','#6B4C7A','#D97B3F','#2F5D4F'];
+  var COLOR_NAMES = {
+    ja: ['朱色','藍色','山吹色','若草色','桜色','金色','白','墨色','空色','紫','橙色','深緑'],
+    en: ['Vermillion','Indigo','Golden Yellow','Fresh Green','Cherry Pink','Gold','White','Ink Black','Sky Blue','Purple','Orange','Deep Green']
+  };
+  var CHARM_TYPE_ICONS = ['🔮','🎐','🔔','📜','🖼️'];
+  var CHARM_TYPE_SUFFIX = {
+    ja: ['お守り','根付','鈴守り','御札','絵馬'],
+    en: ['Charm','Netsuke','Bell Charm','Talisman','Ema Plaque']
+  };
+  var CHARM_BENEFIT_NAMES = {
+    ja: ['縁結び','学業成就','商売繁盛','家内安全','健康長寿','交通安全','厄除け','金運上昇','必勝祈願','安産祈願','開運招福','良縁成就','心願成就','病気平癒','合格祈願','五穀豊穣','千客万来','無病息災','厄払い','福徳円満'],
+    en: ['Good Relationships','Academic Success','Business Prosperity','Household Safety','Health & Longevity','Traffic Safety','Warding Off Evil','Rising Fortune','Victory Prayer','Safe Childbirth','Good Luck','Fated Encounter','Wish Fulfillment','Recovery from Illness','Exam Success','Bountiful Harvest','Prosperous Business','Freedom from Illness','Purification','Complete Fortune']
+  };
+  function buildItemName(langKey, benefitIdx, typeIdx){
+    var benefit = CHARM_BENEFIT_NAMES[langKey][benefitIdx];
+    var suffix = CHARM_TYPE_SUFFIX[langKey][typeIdx];
+    return langKey === 'en' ? (benefit + ' ' + suffix) : (benefit + 'の' + suffix);
+  }
+  function allCharmSlots(langKey){
+    var slots = [];
+    for (var b=0;b<CHARM_BENEFIT_NAMES[langKey].length;b++){
+      for (var t=0;t<CHARM_TYPE_SUFFIX[langKey].length;t++){
+        slots.push({ id: b+'_'+t, name: buildItemName(langKey,b,t), icon: CHARM_TYPE_ICONS[t] });
+      }
+    }
+    return slots;
+  }
+
+  function loadProfile(){
+    try {
+      var raw = localStorage.getItem(PROFILE_KEY);
+      if (!raw) return null;
+      var p = JSON.parse(raw);
+      if (p && p.year && p.month && p.day && p.gender && p.blood) return p;
+      return null;
+    } catch (e) { return null; }
+  }
+  function saveProfile(p){
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch (e) {}
+  }
+
+  /* ---------------- History (おみくじ帳 / musubi) ---------------- */
+  function loadHistory(){
+    try { var raw = localStorage.getItem(HISTORY_KEY); return raw ? JSON.parse(raw) : []; } catch(e){ return []; }
+  }
+  function saveHistory(list){ try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list)); } catch(e){} }
+  function addHistoryEntry(entry){
+    var list = loadHistory();
+    if (list.length && list[list.length-1].date === entry.date) return;
+    entry.tied = false;
+    list.push(entry);
+    saveHistory(list);
+  }
+  function setTiedForToday(tied){
+    var list = loadHistory();
+    for (var i=list.length-1;i>=0;i--){
+      if (list[i].date === dateKey){ list[i].tied = tied; break; }
+    }
+    saveHistory(list);
+  }
+  function isTiedToday(){
+    var list = loadHistory();
+    for (var i=list.length-1;i>=0;i--){
+      if (list[i].date === dateKey) return !!list[i].tied;
+    }
+    return false;
+  }
+  function computeStreaks(history){
+    var dates = history.map(function(h){ return h.date; });
+    var longest = 0, run = 0, prev = null;
+    for (var i=0;i<dates.length;i++){
+      if (prev){
+        var diffDays = Math.round((new Date(dates[i]+'T00:00:00') - new Date(prev+'T00:00:00'))/86400000);
+        run = (diffDays === 1) ? run + 1 : 1;
+      } else {
+        run = 1;
+      }
+      if (run > longest) longest = run;
+      prev = dates[i];
+    }
+    var current = 0;
+    if (dates.length){
+      var lastGap = Math.round((new Date(dateKey+'T00:00:00') - new Date(dates[dates.length-1]+'T00:00:00'))/86400000);
+      if (lastGap <= 1){
+        current = 1;
+        for (var j=dates.length-1;j>0;j--){
+          var gap = Math.round((new Date(dates[j]+'T00:00:00') - new Date(dates[j-1]+'T00:00:00'))/86400000);
+          if (gap === 1) current += 1; else break;
+        }
+      }
+    }
+    return { current: current, longest: longest, total: dates.length };
+  }
+  function computeCollection(history){
+    var collectedIds = {};
+    history.forEach(function(h){ if (h.itemId) collectedIds[h.itemId] = true; });
+    return allCharmSlots(lang).map(function(slot){
+      return { id: slot.id, name: slot.name, icon: slot.icon, collected: !!collectedIds[slot.id] };
+    });
+  }
+  function computeMonthlySummary(history){
+    var prefix = dateKey.slice(0,7);
+    var counts = {};
+    var total = 0;
+    history.forEach(function(h){
+      if (h.date.slice(0,7) === prefix && typeof h.rankIndex === 'number'){
+        counts[h.rankIndex] = (counts[h.rankIndex] || 0) + 1;
+        total += 1;
+      }
+    });
+    return { total: total, counts: counts };
+  }
+
+  /* ---------------- Milestones & celebrations ---------------- */
+  var CELEBRATED_KEY = 'omikuji-celebrated-v1';
+  function loadCelebrated(){ try { var raw = localStorage.getItem(CELEBRATED_KEY); return raw ? JSON.parse(raw) : []; } catch(e){ return []; } }
+  function saveCelebrated(list){ try { localStorage.setItem(CELEBRATED_KEY, JSON.stringify(list)); } catch(e){} }
+  function isCelebrated(id){ return loadCelebrated().indexOf(id) !== -1; }
+  function markCelebrated(id){
+    var list = loadCelebrated();
+    if (list.indexOf(id) === -1){ list.push(id); saveCelebrated(list); }
+  }
+  var STREAK_MILESTONES = [7, 30, 100];
+  function checkMilestones(){
+    var history = loadHistory();
+    var streaks = computeStreaks(history);
+    var collection = computeCollection(history);
+    var collectedCount = collection.filter(function(c){ return c.collected; }).length;
+    var found = [];
+    STREAK_MILESTONES.forEach(function(n){
+      var id = 'streak-' + n;
+      if (streaks.current >= n && !isCelebrated(id)){
+        markCelebrated(id);
+        found.push({ type:'streak', value:n });
+      }
+    });
+    if (collectedCount >= collection.length && !isCelebrated('collection-full')){
+      markCelebrated('collection-full');
+      found.push({ type:'collection' });
+    }
+    return found;
+  }
+  function showCelebration(milestone){
+    var S = T();
+    var text = (milestone.type === 'streak') ? S.celebrationStreak(milestone.value) : S.celebrationCollection;
+    var overlay = document.createElement('div');
+    overlay.className = 'celebration-overlay';
+    var card = document.createElement('div');
+    card.className = 'celebration-card';
+    card.textContent = text;
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+    hapticNotification('SUCCESS');
+    var dismiss = function(){
+      overlay.classList.add('celebration-hide');
+      setTimeout(function(){ if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 350);
+    };
+    overlay.addEventListener('click', dismiss);
+    setTimeout(dismiss, 2800);
+  }
+
   var profileScene = document.getElementById('profile-scene');
   var boxScene = document.getElementById('box-scene');
   var resultScene = document.getElementById('result-scene');
   var historyScene = document.getElementById('history-scene');
   var collectionScene = document.getElementById('collection-scene');
+  var musubiScene = document.getElementById('musubi-scene');
   var themeScene = document.getElementById('theme-scene');
   var tabBar = document.getElementById('tab-bar');
+  var dateEl = document.getElementById('date-label');
+  var seasonBadge = document.getElementById('season-badge');
   var profileLabel = document.getElementById('profile-label');
   var changeBtn = document.getElementById('change-profile-btn');
   var birthInput = document.getElementById('birth-input');
   var genderGroup = document.getElementById('gender-group');
   var bloodGroup = document.getElementById('blood-group');
   var submitBtn = document.getElementById('profile-submit');
+  var appTitleEl = document.getElementById('app-title');
+  var appTaglineEl = document.getElementById('app-tagline');
+  var birthFieldLabel = document.getElementById('birth-field-label');
+  var genderFieldLabel = document.getElementById('gender-field-label');
+  var bloodFieldLabel = document.getElementById('blood-field-label');
+  var drawPromptEl = document.getElementById('draw-prompt');
 
   birthInput.max = dateKey;
   var selectedGender = null;
   var selectedBlood = null;
   var mainViewIsResult = false;
+  var currentProfile = null;
+  var lastResult = null;
+  var lastAlreadyDrawn = false;
+  var refreshResultLabels = null;
 
   function setActiveTab(tab){
     Array.prototype.slice.call(tabBar.querySelectorAll('.tab-btn')).forEach(function(b){
@@ -1071,6 +1574,7 @@
     resultScene.hidden = true;
     historyScene.hidden = true;
     collectionScene.hidden = true;
+    musubiScene.hidden = true;
     themeScene.hidden = true;
     setActiveTab(tab);
     if (tab === 'main'){
@@ -1081,6 +1585,9 @@
     } else if (tab === 'collection'){
       renderCollectionScene();
       collectionScene.hidden = false;
+    } else if (tab === 'musubi'){
+      renderMusubiScene();
+      musubiScene.hidden = false;
     } else if (tab === 'theme'){
       renderThemeScene();
       themeScene.hidden = false;
@@ -1094,14 +1601,28 @@
     var history = loadHistory();
     var streaks = computeStreaks(history);
     var reversed = history.slice().reverse();
+    var S = T();
     var html = '<div class="form-card fade-in">' +
       '<div class="stat-row">' +
-        '<div class="stat"><div class="stat-num">' + streaks.current + '</div><div class="stat-label">連続日数</div></div>' +
-        '<div class="stat"><div class="stat-num">' + streaks.longest + '</div><div class="stat-label">最長記録</div></div>' +
-        '<div class="stat"><div class="stat-num">' + streaks.total + '</div><div class="stat-label">合計</div></div>' +
+        '<div class="stat"><div class="stat-num">' + streaks.current + '</div><div class="stat-label">' + S.streakCurrent + '</div></div>' +
+        '<div class="stat"><div class="stat-num">' + streaks.longest + '</div><div class="stat-label">' + S.streakLongest + '</div></div>' +
+        '<div class="stat"><div class="stat-num">' + streaks.total + '</div><div class="stat-label">' + S.streakTotal + '</div></div>' +
       '</div>';
+    var monthSummary = computeMonthlySummary(history);
+    html += '<div class="month-summary"><p class="month-summary-title">' + S.monthSummaryTitle + '</p>';
+    if (!monthSummary.total){
+      html += '<p class="month-summary-empty">' + S.monthSummaryEmpty + '</p>';
+    } else {
+      for (var ri=0; ri<RANKS[lang].length; ri++){
+        var c = monthSummary.counts[ri] || 0;
+        if (c > 0){
+          html += '<div class="month-summary-row"><span>' + RANKS[lang][ri].name + '</span><span>× ' + c + '</span></div>';
+        }
+      }
+    }
+    html += '</div>';
     if (!reversed.length){
-      html += '<p class="empty-note">まだおみくじの記録がありません。<br>今日のおみくじを引いてみましょう。</p>';
+      html += '<p class="empty-note">' + S.historyEmpty + '</p>';
     } else {
       html += '<div class="history-list">' + reversed.map(function(h){
         return '<div class="history-item">' +
@@ -1116,37 +1637,88 @@
   }
 
   function renderCollectionScene(){
+    var S = T();
     var collection = computeCollection(loadHistory());
     var collectedCount = collection.filter(function(c){ return c.collected; }).length;
     var html = '<div class="form-card fade-in">' +
-      '<p class="collection-summary">' + collectedCount + ' / ' + collection.length + ' 授与品を集めました</p>' +
+      '<p class="collection-summary">' + S.collectionSummary(collectedCount, collection.length) + '</p>' +
       '<div class="charm-grid">' + collection.map(function(c){
-        var icon = CHARM_ICONS[c.name] || '❔';
         return '<div class="charm-cell' + (c.collected ? '' : ' locked') + '">' +
-          '<div class="charm-icon">' + (c.collected ? icon : '？') + '</div>' +
-          '<div class="charm-name">' + (c.collected ? c.name : '未発見') + '</div>' +
+          '<div class="charm-icon">' + (c.collected ? c.icon : '？') + '</div>' +
+          '<div class="charm-name">' + (c.collected ? c.name : S.collectionLockedName) + '</div>' +
         '</div>';
       }).join('') + '</div>' +
     '</div>';
     collectionScene.innerHTML = html;
   }
 
+  function chunk(arr, size){
+    var out = [];
+    for (var i=0;i<arr.length;i+=size) out.push(arr.slice(i,i+size));
+    return out;
+  }
+  function renderMusubiScene(){
+    var S = T();
+    var tiedList = loadHistory().filter(function(h){ return h.tied; });
+    var html = '<div class="form-card fade-in">';
+    if (!tiedList.length){
+      html += '<p class="empty-note">' + S.musubiEmpty + '</p>';
+    } else {
+      html += '<p class="collection-summary">' + S.musubiSummary(tiedList.length) + '</p>';
+      var rows = chunk(tiedList.slice().reverse(), 6);
+      html += '<div class="musubi-board">' + rows.map(function(rowItems){
+        return '<div>' +
+          '<div class="musubi-rope"></div>' +
+          '<div class="musubi-row">' + rowItems.map(function(h){
+            return '<div class="paper-strip" title="' + h.rank + '">' +
+              '<span class="knot-dot" style="background:' + h.colorHex + '"></span>' +
+              '<span class="knot-rank">' + h.rank + '</span>' +
+            '</div>';
+          }).join('') + '</div>' +
+        '</div>';
+      }).join('') + '</div>';
+    }
+    html += '</div>';
+    musubiScene.innerHTML = html;
+  }
+
   function renderThemeScene(){
+    var S = T();
     var html = '<div class="form-card fade-in">' +
       '<div class="theme-grid">' + Object.keys(THEMES).map(function(id){
         var t = THEMES[id];
         var selected = id === currentTheme;
         return '<button type="button" class="theme-card' + (selected ? ' selected' : '') + '" data-theme-id="' + id + '" ' +
           'style="background:linear-gradient(135deg,' + t.light.paper + ',' + t.light.vermillion + ')">' +
-          '<div class="theme-name" style="color:' + t.light.ink + '">' + t.name + (selected ? ' ✓' : '') + '</div>' +
-          '<div class="theme-tagline" style="color:' + t.light.inkSoft + '">' + t.tagline + '</div>' +
+          '<div class="theme-name" style="color:' + t.light.ink + '">' + t.name[lang] + (selected ? ' ✓' : '') + '</div>' +
+          '<div class="theme-tagline" style="color:' + t.light.inkSoft + '">' + t.tagline[lang] + '</div>' +
         '</button>';
       }).join('') + '</div>' +
       '<div class="settings-block">' +
-        '<p class="settings-label">毎日の通知</p>' +
+        '<p class="settings-label">' + S.settingsNotifyLabel + '</p>' +
         '<button type="button" class="toggle-btn" id="notify-toggle" aria-pressed="' + notifyEnabled + '">' +
-          (notifyEnabled ? '通知：オン（毎朝9時にお知らせ）' : '通知：オフ（タップで有効化）') +
+          (notifyEnabled ? S.notifyOn : S.notifyOff) +
         '</button>' +
+      '</div>' +
+      '<div class="settings-block">' +
+        '<p class="settings-label">' + S.settingsSoundLabel + '</p>' +
+        '<button type="button" class="toggle-btn" id="sound-toggle" aria-pressed="' + soundEnabled + '">' +
+          (soundEnabled ? S.soundOn : S.soundOff) +
+        '</button>' +
+      '</div>' +
+      '<div class="settings-block">' +
+        '<p class="settings-label">' + S.settingsBgmLabel + '</p>' +
+        '<button type="button" class="toggle-btn" id="bgm-toggle" aria-pressed="' + bgmEnabled + '">' +
+          (bgmEnabled ? S.bgmOn : S.bgmOff) +
+        '</button>' +
+        '<p class="bgm-credit">BGM：いまたく</p>' +
+      '</div>' +
+      '<div class="settings-block">' +
+        '<p class="settings-label">' + S.settingsLangLabel + '</p>' +
+        '<div class="pill-group" id="lang-group">' +
+          '<button type="button" class="pill" data-value="ja" aria-pressed="' + (lang==='ja') + '">日本語</button>' +
+          '<button type="button" class="pill" data-value="en" aria-pressed="' + (lang==='en') + '">English</button>' +
+        '</div>' +
       '</div>' +
     '</div>';
     themeScene.innerHTML = html;
@@ -1160,6 +1732,64 @@
     });
     var notifyBtn = document.getElementById('notify-toggle');
     if (notifyBtn) notifyBtn.addEventListener('click', toggleNotify);
+    var soundBtn = document.getElementById('sound-toggle');
+    if (soundBtn) soundBtn.addEventListener('click', function(){
+      soundEnabled = !soundEnabled;
+      saveSoundPref(soundEnabled);
+      renderThemeScene();
+      if (soundEnabled) playPaperRustle();
+    });
+    var bgmBtn = document.getElementById('bgm-toggle');
+    if (bgmBtn) bgmBtn.addEventListener('click', toggleBgm);
+    Array.prototype.slice.call(themeScene.querySelectorAll('#lang-group .pill')).forEach(function(btn){
+      btn.addEventListener('click', function(){
+        setLang(btn.getAttribute('data-value'));
+      });
+    });
+  }
+
+  function setLang(newLang){
+    if (newLang !== 'ja' && newLang !== 'en') return;
+    lang = newLang;
+    saveLang(lang);
+    applyLanguage();
+  }
+
+  function applyLanguage(){
+    var S = T();
+    document.documentElement.lang = lang;
+    appTitleEl.textContent = S.appTitle;
+    appTaglineEl.textContent = S.tagline;
+    changeBtn.textContent = S.changeProfile;
+    birthFieldLabel.textContent = S.birthLabel;
+    genderFieldLabel.textContent = S.genderLabel;
+    bloodFieldLabel.textContent = S.bloodLabel;
+    submitBtn.textContent = S.submitDraw;
+    drawPromptEl.textContent = S.drawPrompt;
+    dateEl.textContent = formatHeaderDate();
+    if (activeEvent){
+      seasonBadge.textContent = activeEvent.emoji + ' ' + activeEvent.name[lang];
+      seasonBadge.hidden = false;
+    } else {
+      seasonBadge.hidden = true;
+    }
+    Array.prototype.slice.call(genderGroup.querySelectorAll('.pill')).forEach(function(btn){
+      btn.textContent = S.genderLabels[btn.getAttribute('data-value')];
+    });
+    Array.prototype.slice.call(bloodGroup.querySelectorAll('.pill')).forEach(function(btn){
+      btn.textContent = bloodDisplay(btn.getAttribute('data-value'));
+    });
+    var tabLabelMap = { main:S.tabMain, history:S.tabHistory, collection:S.tabCollection, musubi:S.tabMusubi, theme:S.tabTheme };
+    Array.prototype.slice.call(tabBar.querySelectorAll('.tab-btn')).forEach(function(btn){
+      var label = btn.querySelector('.tab-label');
+      if (label) label.textContent = tabLabelMap[btn.getAttribute('data-tab')];
+    });
+    if (currentProfile) profileLabel.textContent = formatProfileLabel(currentProfile);
+    if (!historyScene.hidden) renderHistoryScene();
+    else if (!collectionScene.hidden) renderCollectionScene();
+    else if (!musubiScene.hidden) renderMusubiScene();
+    else if (!themeScene.hidden) renderThemeScene();
+    else if (!resultScene.hidden && refreshResultLabels) refreshResultLabels();
   }
 
   function wirePillGroup(group, onSelect){
@@ -1187,6 +1817,7 @@
     resultScene.hidden = true;
     historyScene.hidden = true;
     collectionScene.hidden = true;
+    musubiScene.hidden = true;
     themeScene.hidden = true;
     if (existing){
       birthInput.value = existing.year + '-' + String(existing.month).padStart(2,'0') + '-' + String(existing.day).padStart(2,'0');
@@ -1212,44 +1843,49 @@
   });
 
   function initApp(profile){
+    currentProfile = profile;
     changeBtn.hidden = false;
     tabBar.hidden = false;
     setActiveTab('main');
-    var birthSign = zodiacSign(profile.month, profile.day);
-    var birthEra = eraAnimal(profile.year);
-    profileLabel.textContent = birthSign + ' ・ ' + birthEra + '年生まれ ・ ' + GENDER_LABEL[profile.gender] + ' ・ ' + profile.blood + '型';
+    profileLabel.textContent = formatProfileLabel(profile);
 
     var storageKey = 'omikuji-' + dateKey + '-' + profile.year + profile.month + profile.day + profile.gender + profile.blood;
     var seedFn = hashString(dateKey + '-' + profile.year + profile.month + profile.day + profile.gender + profile.blood);
     var rand = mulberry32(seedFn());
     function pick(arr){ return arr[Math.floor(rand() * arr.length)]; }
-    function pickRank(){
-      var total = RANKS.reduce(function(s,r){ return s+r.weight; }, 0);
+    function pickRankIndex(){
+      var ranks = RANKS[lang];
+      var total = ranks.reduce(function(s,r){ return s+r.weight; }, 0);
       var x = rand() * total;
-      for (var i=0;i<RANKS.length;i++){
-        x -= RANKS[i].weight;
-        if (x <= 0) return RANKS[i];
+      for (var i=0;i<ranks.length;i++){
+        x -= ranks[i].weight;
+        if (x <= 0) return i;
       }
-      return RANKS[RANKS.length-1];
+      return ranks.length-1;
     }
 
     function draw(){
       var stickNumber = Math.floor(rand() * 100) + 1;
-      var rank = pickRank();
-      var color = pick(COLORS);
+      var rankIdx = pickRankIndex();
+      var rank = RANKS[lang][rankIdx];
+      var colorIdx = Math.floor(rand() * COLOR_HEXES.length);
+      var benefitIdx = Math.floor(rand() * CHARM_BENEFIT_NAMES.ja.length);
+      var typeIdx = Math.floor(rand() * CHARM_TYPE_SUFFIX.ja.length);
       return {
         stickNumber: stickNumber,
         rank: rank.name,
+        rankIndex: rankIdx,
         overall: rank.text,
-        love: pick(LOVE),
-        work: pick(WORK),
-        money: pick(MONEY),
-        health: pick(HEALTH),
-        bloodTrait: pick(BLOOD[profile.blood]),
-        colorName: color[0],
-        colorHex: color[1],
-        item: pick(ITEMS),
-        advice: pick(ADVICE)
+        love: pick(LOVE[lang]),
+        work: pick(WORK[lang]),
+        money: pick(MONEY[lang]),
+        health: pick(HEALTH[lang]),
+        bloodTrait: pick(BLOOD[lang][profile.blood]),
+        colorName: COLOR_NAMES[lang][colorIdx],
+        colorHex: COLOR_HEXES[colorIdx],
+        item: buildItemName(lang, benefitIdx, typeIdx),
+        itemId: benefitIdx + '_' + typeIdx,
+        advice: pick(ADVICE[lang])
       };
     }
 
@@ -1259,28 +1895,43 @@
 
     function renderResult(result, alreadyDrawn){
       mainViewIsResult = true;
+      lastResult = result;
+      lastAlreadyDrawn = alreadyDrawn;
+      var S = T();
+      var tied = isTiedToday();
       resultScene.innerHTML =
         '<div class="slip fade-in">' +
-          '<div class="slip-number">第 ' + result.stickNumber + ' 番</div>' +
+          '<div class="slip-number">' + S.slipNumber(result.stickNumber) + '</div>' +
           '<div class="seal"><span>' + result.rank + '</span></div>' +
           '<p class="overall-text">' + result.overall + '</p>' +
           '<div class="rows">' +
-            row('恋愛', result.love) +
-            row('仕事', result.work) +
-            row('金運', result.money) +
-            row('健康', result.health) +
-            row('血液型', result.bloodTrait) +
-            row('色', '<span class="swatch" style="background:' + result.colorHex + '"></span>' + result.colorName) +
-            row('小物', result.item) +
+            row(S.rowLove, result.love) +
+            row(S.rowWork, result.work) +
+            row(S.rowMoney, result.money) +
+            row(S.rowHealth, result.health) +
+            row(S.rowBlood, result.bloodTrait) +
+            row(S.rowColor, '<span class="swatch" style="background:' + result.colorHex + '"></span>' + result.colorName) +
+            row(S.rowItem, result.item) +
           '</div>' +
           '<p class="advice">' + result.advice + '</p>' +
-          '<button type="button" class="secondary-btn" id="share-btn">結果をシェア</button>' +
+          (activeEvent ? '<p class="season-note">' + activeEvent.emoji + ' ' + activeEvent.name[lang] + '：' + activeEvent.note[lang] + '</p>' : '') +
+          '<button type="button" class="secondary-btn" id="share-btn">' + S.shareBtn + '</button>' +
+          '<button type="button" class="secondary-btn" id="tie-btn"' + (tied ? ' disabled' : '') + '>' + (tied ? S.tiedBtn : S.tieBtn) + '</button>' +
         '</div>' +
-        (alreadyDrawn ? '<p class="already-note">本日はすでに引いています</p>' : '');
+        (alreadyDrawn ? '<p class="already-note">' + S.alreadyNote + '</p>' : '');
       resultScene.hidden = false;
       boxScene.hidden = true;
       var shareBtn = document.getElementById('share-btn');
       if (shareBtn) shareBtn.addEventListener('click', function(){ shareResult(result); });
+      var tieBtn = document.getElementById('tie-btn');
+      if (tieBtn) tieBtn.addEventListener('click', function(){
+        setTiedForToday(true);
+        playPaperRustle();
+        hapticForTie();
+        tieBtn.textContent = T().tiedBtn;
+        tieBtn.disabled = true;
+      });
+      refreshResultLabels = function(){ renderResult(result, alreadyDrawn); };
     }
 
     var saved = null;
@@ -1305,31 +1956,71 @@
       btn.addEventListener('click', function(){
         if (drawing) return;
         drawing = true;
+        playDrawSound();
+        hapticForDraw();
         var result = draw();
         try { localStorage.setItem(storageKey, JSON.stringify(result)); } catch (e) {}
         addHistoryEntry({
           date: dateKey,
           rank: result.rank,
+          rankIndex: result.rankIndex,
           overall: result.overall,
           item: result.item,
+          itemId: result.itemId,
           colorName: result.colorName,
           colorHex: result.colorHex,
           advice: result.advice,
           stickNumber: result.stickNumber
         });
-        stickNum.textContent = '第' + result.stickNumber + '番';
+        var milestones = checkMilestones();
+        stickNum.textContent = '#' + result.stickNumber;
         btn.classList.add('shaking');
         setTimeout(function(){
           stick.style.opacity = '1';
           stick.classList.add('rise');
         }, 300);
         setTimeout(function(){
+          playRankSound(result.rankIndex);
+          hapticForRank(result.rankIndex);
           renderResult(result, false);
+          if (milestones.length){
+            setTimeout(function(){ showCelebration(milestones[0]); }, 600);
+          }
         }, 1250);
       });
     }
   }
 
+  function hashString(str){
+    var h = 1779033703 ^ str.length;
+    for (var i=0; i<str.length; i++){
+      h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+      h = (h << 13) | (h >>> 19);
+    }
+    return function(){
+      h = Math.imul(h ^ (h >>> 16), 2246822507);
+      h = Math.imul(h ^ (h >>> 13), 3266489909);
+      h ^= h >>> 16;
+      return h >>> 0;
+    };
+  }
+  function mulberry32(seed){
+    var a = seed;
+    return function(){
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  applyLanguage();
+  if (bgmEnabled){
+    document.addEventListener('click', function resumeBgmOnce(){
+      startBgm();
+      document.removeEventListener('click', resumeBgmOnce);
+    }, { once: true });
+  }
   var profile = loadProfile();
   if (profile){
     initApp(profile);
