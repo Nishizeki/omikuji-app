@@ -16,3 +16,5 @@ android/.idea/
 
 .DS_Store
 ios/App/ExportOptions.plist
+
+.claude/
