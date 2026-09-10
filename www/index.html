@@ -785,7 +785,7 @@
 <div class="stage">
   <header>
     <div class="torii" aria-hidden="true">⛩</div>
-    <h1 id="app-title">今日のおみくじ</h1>
+    <h1 id="app-title">おみくじライフ</h1>
     <div class="date" id="date-label"></div>
     <div class="season-badge" id="season-badge" hidden></div>
     <div class="profile" id="profile-label"></div>
@@ -876,7 +876,7 @@
 
   var STR = {
     ja: {
-      appTitle:'今日のおみくじ', tagline:'これは娯楽目的の占いです',
+      appTitle:'おみくじライフ', tagline:'これは娯楽目的の占いです',
       changeProfile:'プロフィールを変更',
       birthLabel:'生年月日', genderLabel:'性別', bloodLabel:'血液型',
       genderLabels:{ male:'男性', female:'女性', other:'その他' },
@@ -906,7 +906,7 @@
       settingsLangLabel:'言語 / Language'
     },
     en: {
-      appTitle:"Today's Omikuji", tagline:'For entertainment purposes only.',
+      appTitle:'Omikuji Life', tagline:'For entertainment purposes only.',
       changeProfile:'Edit profile',
       birthLabel:'Date of birth', genderLabel:'Gender', bloodLabel:'Blood type',
       genderLabels:{ male:'Male', female:'Female', other:'Other' },
@@ -977,36 +977,36 @@
     return mo + '月' + da + '日';
   }
 
-  /* ---------------- Themes (original, fictional shrine motifs) ---------------- */
+  /* ---------------- Themes (four seasons) ---------------- */
   var THEMES = {
-    shirogitsune: {
-      name:{ ja:'白狐の社', en:'Shirogitsune Shrine' }, tagline:{ ja:'定番の朱色と金色', en:'Classic vermillion and gold' },
-      light:{ paper:'#F6EFDD', paperDeep:'#E8D8AE', card:'#FBF6E9', ink:'#2A211B', inkSoft:'#6B5C48', vermillion:'#C13B3B', vermillionDeep:'#8C2020', gold:'#B8912F', indigo:'#33415C', wood:'#C7A567', woodDeep:'#9C7A40', woodDark:'#7A5E30', hole:'#3A2C18', focus:'#33415C' },
-      dark:{ paper:'#1B1712', paperDeep:'#120E0B', card:'#211B14', ink:'#EFE3D2', inkSoft:'#B9A98D', vermillion:'#D96A55', vermillionDeep:'#A5341F', gold:'#D4AF5A', indigo:'#8B9DBE', wood:'#6E5636', woodDeep:'#4A3A22', woodDark:'#2E2414', hole:'#0B0806', focus:'#D4AF5A' }
+    haru: {
+      name:{ ja:'春', en:'Spring' }, tagline:{ ja:'桜色と若草の風', en:'Cherry blossoms and fresh greens' },
+      light:{ paper:'#FBEEF2', paperDeep:'#F3D9E2', card:'#FFF7FA', ink:'#332428', inkSoft:'#8A6B72', vermillion:'#E48AA6', vermillionDeep:'#C25F80', gold:'#8FB96A', indigo:'#6B4A5A', wood:'#E2B8C4', woodDeep:'#C98FA0', woodDark:'#A96C7D', hole:'#4A2F37', focus:'#6B4A5A' },
+      dark:{ paper:'#211519', paperDeep:'#160D10', card:'#281A1F', ink:'#F6E2E8', inkSoft:'#C9A1AC', vermillion:'#F0A8C0', vermillionDeep:'#D67FA0', gold:'#B7DE94', indigo:'#D8B7C4', wood:'#5C3A44', woodDeep:'#3E262D', woodDark:'#28171C', hole:'#0D0708', focus:'#B7DE94' }
     },
-    yamagiri: {
-      name:{ ja:'山霧の社', en:'Yamagiri Shrine' }, tagline:{ ja:'深緑と霧のしじま', en:'Deep green and misty stillness' },
-      light:{ paper:'#EEF3EA', paperDeep:'#D9E4D2', card:'#F7FAF4', ink:'#20281F', inkSoft:'#5B6B54', vermillion:'#3E7A52', vermillionDeep:'#2A5A3A', gold:'#8FA24A', indigo:'#35594F', wood:'#9CB08A', woodDeep:'#71875F', woodDark:'#586B47', hole:'#22301E', focus:'#35594F' },
-      dark:{ paper:'#131A12', paperDeep:'#0C110B', card:'#182018', ink:'#E4EEDF', inkSoft:'#A9BBA0', vermillion:'#6FBE86', vermillionDeep:'#3F8256', gold:'#B9CE7C', indigo:'#8FB3A4', wood:'#4C5E42', woodDeep:'#39472F', woodDark:'#242D1D', hole:'#080B07', focus:'#B9CE7C' }
+    natsu: {
+      name:{ ja:'夏', en:'Summer' }, tagline:{ ja:'涼やかな藍と碧', en:'Cool indigo and jade breeze' },
+      light:{ paper:'#EAF4F3', paperDeep:'#CFE8E6', card:'#F6FBFA', ink:'#1F2E2C', inkSoft:'#54706C', vermillion:'#2C7A8C', vermillionDeep:'#1D5A68', gold:'#4E9C7C', indigo:'#274A63', wood:'#9CC4C0', woodDeep:'#6E9C97', woodDark:'#517571', hole:'#152624', focus:'#274A63' },
+      dark:{ paper:'#0E1817', paperDeep:'#09100F', card:'#131F1E', ink:'#DCEEEC', inkSoft:'#9DBFBB', vermillion:'#5FC2D6', vermillionDeep:'#358FA3', gold:'#7FCBA6', indigo:'#8FB3C9', wood:'#2E4C49', woodDeep:'#1F3634', woodDark:'#132322', hole:'#050A09', focus:'#7FCBA6' }
     },
-    yukidoke: {
-      name:{ ja:'雪解けの宮', en:'Yukidoke Shrine' }, tagline:{ ja:'冬空の藍と白銀', en:'Winter indigo and silver snow' },
-      light:{ paper:'#EEF3F8', paperDeep:'#D6E3EE', card:'#F8FBFD', ink:'#20272E', inkSoft:'#59677A', vermillion:'#3C6FA6', vermillionDeep:'#254C78', gold:'#9FB9C9', indigo:'#2E3E5C', wood:'#AFC4D6', woodDeep:'#7E9AB0', woodDark:'#5F7A8E', hole:'#1E2A33', focus:'#2E3E5C' },
-      dark:{ paper:'#10151C', paperDeep:'#0A0E13', card:'#151C24', ink:'#E1EAF2', inkSoft:'#9DB0C2', vermillion:'#6FA3D6', vermillionDeep:'#3E6D9C', gold:'#BFD3DF', indigo:'#8FA8C9', wood:'#3D5163', woodDeep:'#2C3B49', woodDark:'#1C2731', hole:'#070A0D', focus:'#BFD3DF' }
-    },
-    koyo: {
-      name:{ ja:'紅葉の杜', en:'Koyo Shrine' }, tagline:{ ja:'紅葉と夕暮れの紫', en:'Autumn leaves and dusky purple' },
+    aki: {
+      name:{ ja:'秋', en:'Autumn' }, tagline:{ ja:'紅葉と夕暮れの彩り', en:'Autumn leaves and dusky hues' },
       light:{ paper:'#F8EFE7', paperDeep:'#EEDAC6', card:'#FDF5EC', ink:'#2E1F1A', inkSoft:'#7A5C4A', vermillion:'#C1602E', vermillionDeep:'#8F3F17', gold:'#B8752F', indigo:'#5C3A5E', wood:'#C79A67', woodDeep:'#9C6E40', woodDark:'#7A5230', hole:'#3A2418', focus:'#5C3A5E' },
       dark:{ paper:'#1C130F', paperDeep:'#130D0A', card:'#211712', ink:'#F1E1D2', inkSoft:'#C2A48D', vermillion:'#E08A5A', vermillionDeep:'#B0562A', gold:'#D9A45C', indigo:'#B98FBB', wood:'#6E4A36', woodDeep:'#4A3122', woodDark:'#2E1E14', hole:'#0B0705', focus:'#D9A45C' }
+    },
+    fuyu: {
+      name:{ ja:'冬', en:'Winter' }, tagline:{ ja:'雪あかりと銀の静寂', en:'Snow light and silver stillness' },
+      light:{ paper:'#EEF3F8', paperDeep:'#D6E3EE', card:'#F8FBFD', ink:'#20272E', inkSoft:'#59677A', vermillion:'#3C6FA6', vermillionDeep:'#254C78', gold:'#9FB9C9', indigo:'#2E3E5C', wood:'#AFC4D6', woodDeep:'#7E9AB0', woodDark:'#5F7A8E', hole:'#1E2A33', focus:'#2E3E5C' },
+      dark:{ paper:'#10151C', paperDeep:'#0A0E13', card:'#151C24', ink:'#E1EAF2', inkSoft:'#9DB0C2', vermillion:'#6FA3D6', vermillionDeep:'#3E6D9C', gold:'#BFD3DF', indigo:'#8FA8C9', wood:'#3D5163', woodDeep:'#2C3B49', woodDark:'#1C2731', hole:'#070A0D', focus:'#BFD3DF' }
     }
   };
   var THEME_VAR_MAP = { paper:'--paper', paperDeep:'--paper-deep', card:'--card', ink:'--ink', inkSoft:'--ink-soft', vermillion:'--vermillion', vermillionDeep:'--vermillion-deep', gold:'--gold', indigo:'--indigo', wood:'--wood', woodDeep:'--wood-deep', woodDark:'--wood-dark', hole:'--hole', focus:'--focus' };
 
   function isDarkMode(){ return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches); }
-  function loadTheme(){ try { var t = localStorage.getItem(THEME_KEY); return (t && THEMES[t]) ? t : 'shirogitsune'; } catch(e){ return 'shirogitsune'; } }
+  function loadTheme(){ try { var t = localStorage.getItem(THEME_KEY); return (t && THEMES[t]) ? t : 'aki'; } catch(e){ return 'aki'; } }
   function saveTheme(id){ try { localStorage.setItem(THEME_KEY, id); } catch(e){} }
   function applyTheme(themeId){
-    var theme = THEMES[themeId] || THEMES.shirogitsune;
+    var theme = THEMES[themeId] || THEMES.aki;
     var vars = isDarkMode() ? theme.dark : theme.light;
     var root = document.documentElement;
     Object.keys(THEME_VAR_MAP).forEach(function(k){ root.style.setProperty(THEME_VAR_MAP[k], vars[k]); });
@@ -1239,7 +1239,7 @@
     var W = 750, H = 1000;
     canvas.width = W; canvas.height = H;
     var ctx = canvas.getContext('2d');
-    var theme = THEMES[currentTheme] || THEMES.shirogitsune;
+    var theme = THEMES[currentTheme] || THEMES.aki;
     var pal = isDarkMode() ? theme.dark : theme.light;
     var pad = 40;
 
