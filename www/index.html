@@ -68,6 +68,9 @@
     justify-content:center;
     padding:32px 16px;
     touch-action:manipulation;
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    user-select:none;
     background:
       radial-gradient(ellipse at 50% -10%, color-mix(in srgb, var(--paper-deep) 55%, transparent), transparent 60%),
       var(--paper);
@@ -733,6 +736,13 @@
     font-weight:700;
     color:var(--vermillion);
   }
+  .musubi-tear-hint{
+    text-align:center;
+    font-size:.6rem;
+    color:var(--ink-soft);
+    opacity:.7;
+    margin:2px 0 0;
+  }
   @keyframes tearShake{
     0%,100%{ transform:rotate(0deg); }
     20%{ transform:rotate(-4deg); }
@@ -746,14 +756,27 @@
     pointer-events:none;
     z-index:80;
     transform-origin:50% 15%;
-    transition:transform .6s cubic-bezier(.32,.68,.28,1), opacity .4s ease .18s;
+    filter:drop-shadow(1px 3px 3px rgba(0,0,0,.28));
+    transition:transform .18s ease-out;
   }
   .tear-half.tear-left{ clip-path:polygon(0 0,45% 0,53% 9%,41% 17%,56% 26%,39% 35%,57% 45%,38% 54%,59% 64%,40% 74%,55% 84%,45% 93%,49% 100%,0 100%); }
   .tear-half.tear-right{ clip-path:polygon(45% 0,100% 0,100% 100%,49% 100%,45% 93%,55% 84%,40% 74%,59% 64%,38% 54%,57% 45%,39% 35%,56% 26%,41% 17%,53% 9%); }
   .tear-half.tear-pull.tear-left{ transform:translate(-6px, 2px) rotate(-5deg); }
   .tear-half.tear-pull.tear-right{ transform:translate(6px, 2px) rotate(5deg); }
-  .tear-half.tear-go.tear-left{ transform:translate(-38px, 150px) rotate(-78deg); opacity:0; }
-  .tear-half.tear-go.tear-right{ transform:translate(38px, 150px) rotate(78deg); opacity:0; }
+  @keyframes tearFallLeft{
+    0%{ transform:translate(-6px,2px) rotate(-5deg) scale(1); opacity:1; }
+    30%{ transform:translate(-20px,34px) rotate(-32deg) scale(1); opacity:1; }
+    60%{ transform:translate(-29px,82px) rotate(-58deg) scale(.94); opacity:.85; }
+    100%{ transform:translate(-40px,155px) rotate(-84deg) scale(.82); opacity:0; }
+  }
+  @keyframes tearFallRight{
+    0%{ transform:translate(6px,2px) rotate(5deg) scale(1); opacity:1; }
+    30%{ transform:translate(20px,38px) rotate(34deg) scale(1); opacity:1; }
+    60%{ transform:translate(30px,88px) rotate(62deg) scale(.94); opacity:.85; }
+    100%{ transform:translate(42px,162px) rotate(88deg) scale(.82); opacity:0; }
+  }
+  .tear-half.tear-go.tear-left{ animation:tearFallLeft .62s cubic-bezier(.4,0,.2,1) forwards; }
+  .tear-half.tear-go.tear-right{ animation:tearFallRight .62s cubic-bezier(.4,0,.2,1) forwards .03s; }
 
   /* ---- Theme scene ---- */
   .theme-grid{
@@ -943,6 +966,7 @@
       collectionLockedName:'未発見',
       musubiEmpty:'まだ結び所に結ばれたおみくじがありません。今日の結果を結んでみましょう。',
       musubiSummary:function(n){ return n + ' 件のおみくじが結ばれています'; },
+      musubiTearHint:'長押しで削除できます',
       monthSummaryTitle:'今月の記録',
       monthSummaryEmpty:'今月はまだ記録がありません。',
       celebrationStreak:function(n){ return '🎉 ' + n + '日連続達成！'; },
@@ -973,6 +997,7 @@
       collectionLockedName:'???',
       musubiEmpty:'No fortunes tied yet. Tie your first one today.',
       musubiSummary:function(n){ return n + ' fortunes tied'; },
+      musubiTearHint:'Long-press a fortune to tear it away',
       monthSummaryTitle:'This Month',
       monthSummaryEmpty:'No fortunes drawn this month yet.',
       celebrationStreak:function(n){ return '🎉 ' + n + '-day streak!'; },
@@ -1795,6 +1820,7 @@
           }).join('') + '</div>' +
         '</div>';
       }).join('') + '</div>';
+      html += '<p class="musubi-tear-hint">' + S.musubiTearHint + '</p>';
     }
     html += '</div>';
     musubiScene.innerHTML = html;
@@ -1841,7 +1867,7 @@
       setTimeout(function(){
         left.remove(); right.remove();
         untieDate(date);
-      }, 110 + 620);
+      }, 110 + 670);
     }, 220);
   }
   function wireMusubiTear(){
