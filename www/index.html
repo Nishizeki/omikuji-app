@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>おみくじライフ</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>
@@ -67,6 +67,7 @@
     align-items:center;
     justify-content:center;
     padding:32px 16px;
+    touch-action:manipulation;
     background:
       radial-gradient(ellipse at 50% -10%, color-mix(in srgb, var(--paper-deep) 55%, transparent), transparent 60%),
       var(--paper);
@@ -732,16 +733,27 @@
     font-weight:700;
     color:var(--vermillion);
   }
+  @keyframes tearShake{
+    0%,100%{ transform:rotate(0deg); }
+    20%{ transform:rotate(-4deg); }
+    45%{ transform:rotate(3deg); }
+    70%{ transform:rotate(-2deg); }
+    90%{ transform:rotate(1deg); }
+  }
+  .paper-strip.tie-tearing{ animation:tearShake .22s ease-in-out 1; }
   .tear-half{
     position:fixed;
     pointer-events:none;
     z-index:80;
-    transition:transform .45s cubic-bezier(.4,.6,.3,1), opacity .45s ease;
+    transform-origin:50% 15%;
+    transition:transform .6s cubic-bezier(.32,.68,.28,1), opacity .4s ease .18s;
   }
-  .tear-half.tear-left{ clip-path:inset(0 50% 0 0); }
-  .tear-half.tear-right{ clip-path:inset(0 0 0 50%); }
-  .tear-half.tear-go.tear-left{ transform:translate(-30px, 100px) rotate(-55deg); opacity:0; }
-  .tear-half.tear-go.tear-right{ transform:translate(30px, 100px) rotate(55deg); opacity:0; }
+  .tear-half.tear-left{ clip-path:polygon(0 0,45% 0,53% 9%,41% 17%,56% 26%,39% 35%,57% 45%,38% 54%,59% 64%,40% 74%,55% 84%,45% 93%,49% 100%,0 100%); }
+  .tear-half.tear-right{ clip-path:polygon(45% 0,100% 0,100% 100%,49% 100%,45% 93%,55% 84%,40% 74%,59% 64%,38% 54%,57% 45%,39% 35%,56% 26%,41% 17%,53% 9%); }
+  .tear-half.tear-pull.tear-left{ transform:translate(-6px, 2px) rotate(-5deg); }
+  .tear-half.tear-pull.tear-right{ transform:translate(6px, 2px) rotate(5deg); }
+  .tear-half.tear-go.tear-left{ transform:translate(-38px, 150px) rotate(-78deg); opacity:0; }
+  .tear-half.tear-go.tear-right{ transform:translate(38px, 150px) rotate(78deg); opacity:0; }
 
   /* ---- Theme scene ---- */
   .theme-grid{
@@ -1795,31 +1807,42 @@
   }
   function tearPaperStrip(stripEl, date){
     var rect = stripEl.getBoundingClientRect();
-    stripEl.style.visibility = 'hidden';
-    function makeHalf(side){
-      var half = stripEl.cloneNode(true);
-      half.classList.add('tear-half', 'tear-' + side);
-      half.style.position = 'fixed';
-      half.style.left = rect.left + 'px';
-      half.style.top = rect.top + 'px';
-      half.style.width = rect.width + 'px';
-      half.style.height = rect.height + 'px';
-      half.style.margin = '0';
-      document.body.appendChild(half);
-      return half;
-    }
-    var left = makeHalf('left');
-    var right = makeHalf('right');
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        left.classList.add('tear-go');
-        right.classList.add('tear-go');
-      });
-    });
+    stripEl.classList.add('tie-tearing');
+    hapticImpact('LIGHT');
     setTimeout(function(){
-      left.remove(); right.remove();
-      untieDate(date);
-    }, 480);
+      stripEl.style.visibility = 'hidden';
+      function makeHalf(side){
+        var half = stripEl.cloneNode(true);
+        half.classList.remove('tie-tearing');
+        half.classList.add('tear-half', 'tear-' + side);
+        half.style.position = 'fixed';
+        half.style.left = rect.left + 'px';
+        half.style.top = rect.top + 'px';
+        half.style.width = rect.width + 'px';
+        half.style.height = rect.height + 'px';
+        half.style.margin = '0';
+        document.body.appendChild(half);
+        return half;
+      }
+      var left = makeHalf('left');
+      var right = makeHalf('right');
+      playPaperRustle();
+      hapticImpact('MEDIUM');
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          left.classList.add('tear-pull');
+          right.classList.add('tear-pull');
+          setTimeout(function(){
+            left.classList.add('tear-go');
+            right.classList.add('tear-go');
+          }, 110);
+        });
+      });
+      setTimeout(function(){
+        left.remove(); right.remove();
+        untieDate(date);
+      }, 110 + 620);
+    }, 220);
   }
   function wireMusubiTear(){
     if (musubiScene.dataset.tearWired) return;
