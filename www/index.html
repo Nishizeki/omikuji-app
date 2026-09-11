@@ -650,27 +650,32 @@
   .charm-name{ font-size:.58rem; color:var(--ink-soft); line-height:1.25; }
 
   /* ---- Musubi (tying spot) scene ---- */
-  .musubi-hint-line{
-    text-align:center;
-    font-size:.68rem;
-    color:var(--vermillion);
-    margin:-2px 0 10px;
+  .musubi-board{
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+    max-height:52vh;
+    overflow-y:auto;
+    padding:4px 4px 10px;
   }
-  .musubi-board-area{
-    position:relative;
-    height:50vh;
-    min-height:280px;
-    border-radius:14px;
-    border:2px dashed color-mix(in srgb, var(--wood-deep) 45%, transparent);
-    background:color-mix(in srgb, var(--paper-deep) 25%, transparent);
-    overflow:hidden;
-    touch-action:none;
-    -webkit-user-select:none;
-    user-select:none;
+  .musubi-rope{
+    height:13px;
+    border-radius:7px;
+    background:
+      repeating-linear-gradient(115deg,
+        color-mix(in srgb, var(--wood) 100%, transparent) 0px,
+        color-mix(in srgb, var(--wood) 78%, black 12%) 3px,
+        var(--wood) 6px),
+      linear-gradient(180deg, var(--wood) 0%, var(--wood-deep) 100%);
+    box-shadow:0 2px 4px color-mix(in srgb, var(--ink) 25%, transparent);
   }
-  .musubi-board-area .paper-strip{
-    position:absolute;
-    transform:translate(-50%,-50%);
+  .musubi-row{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    column-gap:14px;
+    row-gap:20px;
+    padding-top:16px;
   }
   .paper-strip{
     width:26px;
@@ -684,6 +689,10 @@
     align-items:flex-end;
     justify-content:center;
     padding-bottom:5px;
+    transition:transform .15s ease;
+  }
+  .paper-strip.tie-pressing{
+    transform:rotate(-3deg) scale(.97);
   }
   .paper-strip::before{
     content:"";
@@ -695,10 +704,19 @@
   .paper-strip::after{
     content:"";
     position:absolute;
-    top:-16px; left:50%;
+    top:-14px; left:50%;
     transform:translateX(-50%);
-    width:2px; height:16px;
+    width:2px; height:14px;
     background:color-mix(in srgb, var(--ink) 45%, transparent);
+  }
+  .paper-strip .tie-knot{
+    position:absolute;
+    top:-17px; left:50%;
+    transform:translateX(-50%);
+    width:6px; height:6px;
+    border-radius:50%;
+    background:color-mix(in srgb, var(--ink) 55%, transparent);
+    box-shadow:0 0 0 2px color-mix(in srgb, var(--wood) 55%, transparent);
   }
   .knot-dot{
     position:absolute;
@@ -714,6 +732,16 @@
     font-weight:700;
     color:var(--vermillion);
   }
+  .tear-half{
+    position:fixed;
+    pointer-events:none;
+    z-index:80;
+    transition:transform .45s cubic-bezier(.4,.6,.3,1), opacity .45s ease;
+  }
+  .tear-half.tear-left{ clip-path:inset(0 50% 0 0); }
+  .tear-half.tear-right{ clip-path:inset(0 0 0 50%); }
+  .tear-half.tear-go.tear-left{ transform:translate(-30px, 100px) rotate(-55deg); opacity:0; }
+  .tear-half.tear-go.tear-right{ transform:translate(30px, 100px) rotate(55deg); opacity:0; }
 
   /* ---- Theme scene ---- */
   .theme-grid{
@@ -903,7 +931,6 @@
       collectionLockedName:'未発見',
       musubiEmpty:'まだ結び所に結ばれたおみくじがありません。今日の結果を結んでみましょう。',
       musubiSummary:function(n){ return n + ' 件のおみくじが結ばれています'; },
-      musubiHint:'下のエリアを長押しすると、その場所に今日のおみくじを結べます',
       monthSummaryTitle:'今月の記録',
       monthSummaryEmpty:'今月はまだ記録がありません。',
       celebrationStreak:function(n){ return '🎉 ' + n + '日連続達成！'; },
@@ -934,7 +961,6 @@
       collectionLockedName:'???',
       musubiEmpty:'No fortunes tied yet. Tie your first one today.',
       musubiSummary:function(n){ return n + ' fortunes tied'; },
-      musubiHint:'Long-press anywhere below to tie today’s fortune at that spot',
       monthSummaryTitle:'This Month',
       monthSummaryEmpty:'No fortunes drawn this month yet.',
       celebrationStreak:function(n){ return '🎉 ' + n + '-day streak!'; },
@@ -1496,10 +1522,17 @@
     list.push(entry);
     saveHistory(list);
   }
-  function setTiedForToday(tied, pos){
+  function setTiedForToday(tied){
     var list = loadHistory();
     for (var i=list.length-1;i>=0;i--){
-      if (list[i].date === dateKey){ list[i].tied = tied; if (pos) list[i].tiePos = pos; break; }
+      if (list[i].date === dateKey){ list[i].tied = tied; break; }
+    }
+    saveHistory(list);
+  }
+  function setTiedForDate(date, tied){
+    var list = loadHistory();
+    for (var i=0;i<list.length;i++){
+      if (list[i].date === date){ list[i].tied = tied; break; }
     }
     saveHistory(list);
   }
@@ -1509,23 +1542,6 @@
       if (list[i].date === dateKey) return !!list[i].tied;
     }
     return false;
-  }
-  function canTieToday(){
-    var list = loadHistory();
-    for (var i=list.length-1;i>=0;i--){
-      if (list[i].date === dateKey) return !list[i].tied;
-    }
-    return false;
-  }
-  function tieTodayAt(xPct, yPct){
-    if (!canTieToday()) return false;
-    setTiedForToday(true, { x: xPct, y: yPct });
-    return true;
-  }
-  function fallbackTiePos(dateStr){
-    var seedFn = hashString('musubi-pos-' + dateStr);
-    var h1 = seedFn(), h2 = seedFn();
-    return { x: 10 + (h1 % 8000)/100, y: 12 + (h2 % 6000)/100 };
   }
   function computeStreaks(history){
     var dates = history.map(function(h){ return h.date; });
@@ -1741,60 +1757,103 @@
     collectionScene.innerHTML = html;
   }
 
+  function chunk(arr, size){
+    var out = [];
+    for (var i=0;i<arr.length;i+=size) out.push(arr.slice(i,i+size));
+    return out;
+  }
   function renderMusubiScene(){
     var S = T();
     var tiedList = loadHistory().filter(function(h){ return h.tied; });
     var html = '<div class="form-card fade-in">';
-    html += '<p class="collection-summary">' + (tiedList.length ? S.musubiSummary(tiedList.length) : S.musubiEmpty) + '</p>';
-    if (canTieToday()) html += '<p class="musubi-hint-line">' + S.musubiHint + '</p>';
-    html += '<div class="musubi-board-area" id="musubi-board-area">' + tiedList.map(function(h){
-      var pos = h.tiePos || fallbackTiePos(h.date);
-      return '<div class="paper-strip" style="left:' + pos.x + '%;top:' + pos.y + '%;" title="' + h.rank + '">' +
-        '<span class="knot-dot" style="background:' + h.colorHex + '"></span>' +
-        '<span class="knot-rank">' + h.rank + '</span>' +
-      '</div>';
-    }).join('') + '</div>';
+    if (!tiedList.length){
+      html += '<p class="empty-note">' + S.musubiEmpty + '</p>';
+    } else {
+      html += '<p class="collection-summary">' + S.musubiSummary(tiedList.length) + '</p>';
+      var rows = chunk(tiedList.slice().reverse(), 6);
+      html += '<div class="musubi-board">' + rows.map(function(rowItems){
+        return '<div>' +
+          '<div class="musubi-rope"></div>' +
+          '<div class="musubi-row">' + rowItems.map(function(h){
+            return '<div class="paper-strip" data-date="' + h.date + '" title="' + h.rank + '">' +
+              '<span class="tie-knot"></span>' +
+              '<span class="knot-dot" style="background:' + h.colorHex + '"></span>' +
+              '<span class="knot-rank">' + h.rank + '</span>' +
+            '</div>';
+          }).join('') + '</div>' +
+        '</div>';
+      }).join('') + '</div>';
+    }
     html += '</div>';
     musubiScene.innerHTML = html;
-    wireMusubiBoard();
+    wireMusubiTear();
   }
-  function wireMusubiBoard(){
-    var board = document.getElementById('musubi-board-area');
-    if (!board) return;
+  function untieDate(date){
+    setTiedForDate(date, false);
+    renderMusubiScene();
+    if (date === dateKey && refreshResultLabels) refreshResultLabels();
+  }
+  function tearPaperStrip(stripEl, date){
+    var rect = stripEl.getBoundingClientRect();
+    stripEl.style.visibility = 'hidden';
+    function makeHalf(side){
+      var half = stripEl.cloneNode(true);
+      half.classList.add('tear-half', 'tear-' + side);
+      half.style.position = 'fixed';
+      half.style.left = rect.left + 'px';
+      half.style.top = rect.top + 'px';
+      half.style.width = rect.width + 'px';
+      half.style.height = rect.height + 'px';
+      half.style.margin = '0';
+      document.body.appendChild(half);
+      return half;
+    }
+    var left = makeHalf('left');
+    var right = makeHalf('right');
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        left.classList.add('tear-go');
+        right.classList.add('tear-go');
+      });
+    });
+    setTimeout(function(){
+      left.remove(); right.remove();
+      untieDate(date);
+    }, 480);
+  }
+  function wireMusubiTear(){
+    if (musubiScene.dataset.tearWired) return;
+    musubiScene.dataset.tearWired = '1';
     var LONG_PRESS_MS = 500;
     var MOVE_TOLERANCE = 12;
-    var pressTimer = null;
+    var pressTimer = null, pressEl = null;
     var startX = 0, startY = 0;
     function clearPress(){
       if (pressTimer){ clearTimeout(pressTimer); pressTimer = null; }
+      if (pressEl){ pressEl.classList.remove('tie-pressing'); pressEl = null; }
     }
-    board.addEventListener('pointerdown', function(e){
+    musubiScene.addEventListener('pointerdown', function(e){
+      var strip = e.target.closest && e.target.closest('.paper-strip');
+      if (!strip) return;
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       startX = e.clientX; startY = e.clientY;
       clearPress();
+      pressEl = strip;
+      pressEl.classList.add('tie-pressing');
       pressTimer = setTimeout(function(){
         pressTimer = null;
-        var rect = board.getBoundingClientRect();
-        var xPct = Math.max(4, Math.min(96, ((startX - rect.left) / rect.width) * 100));
-        var yPct = Math.max(4, Math.min(96, ((startY - rect.top) / rect.height) * 100));
-        if (tieTodayAt(xPct, yPct)){
-          playPaperRustle();
-          hapticForTie();
-          renderMusubiScene();
-          if (refreshResultLabels) refreshResultLabels();
-        } else {
-          hapticImpact('LIGHT');
-        }
+        var el = pressEl; pressEl = null;
+        if (el){ el.classList.remove('tie-pressing'); tearPaperStrip(el, el.dataset.date); }
       }, LONG_PRESS_MS);
     });
-    board.addEventListener('pointermove', function(e){
+    musubiScene.addEventListener('pointermove', function(e){
       if (!pressTimer) return;
       if (Math.abs(e.clientX - startX) > MOVE_TOLERANCE || Math.abs(e.clientY - startY) > MOVE_TOLERANCE) clearPress();
     });
-    board.addEventListener('pointerup', clearPress);
-    board.addEventListener('pointercancel', clearPress);
-    board.addEventListener('pointerleave', clearPress);
-    board.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    musubiScene.addEventListener('pointerup', clearPress);
+    musubiScene.addEventListener('pointercancel', clearPress);
+    musubiScene.addEventListener('pointerleave', clearPress);
+    musubiScene.addEventListener('contextmenu', function(e){ if (e.target.closest && e.target.closest('.paper-strip')) e.preventDefault(); });
   }
 
   function renderThemeScene(){
@@ -2040,7 +2099,11 @@
       if (shareBtn) shareBtn.addEventListener('click', function(){ shareResult(result); });
       var tieBtn = document.getElementById('tie-btn');
       if (tieBtn) tieBtn.addEventListener('click', function(){
-        showTab('musubi');
+        setTiedForToday(true);
+        playPaperRustle();
+        hapticForTie();
+        tieBtn.textContent = T().tiedBtn;
+        tieBtn.disabled = true;
       });
       refreshResultLabels = function(){ renderResult(result, alreadyDrawn); };
     }
